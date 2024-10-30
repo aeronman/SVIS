@@ -75,7 +75,7 @@ $qrImage = $_SESSION['qr_image'];
           </li>
         </ul>
         <ul class="navbar-nav navbar-nav-right">
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
               <i class="icon-bell mx-0"></i>
               <span class="count"></span>
@@ -122,7 +122,7 @@ $qrImage = $_SESSION['qr_image'];
                 </div>
               </a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
               <img src="<?=$profilePicture?>" alt="profile"/>
@@ -231,28 +231,6 @@ $qrImage = $_SESSION['qr_image'];
      
 
   
-          <!-- Delete Confirmation Modal -->
-      <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
-              <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body">
-              Are you sure you want to delete this record?
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-              <form id="deleteForm" method="POST" action="">
-                <input type="hidden" name="id" id="deleteId" value="">
-                <button type="submit" class="btn btn-danger">Delete</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-
 
 
     <div class="col-lg-12 grid-margin stretch-card">
@@ -262,24 +240,25 @@ $qrImage = $_SESSION['qr_image'];
             
             
       
-            <h2>Violations List</h2>
-            <table id="violationsTable" class="display" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Violation No</th>
-                        <th>Student ID</th>
-                        <th>Full Name</th>
-                        <th>Section</th>
-                        <th>Profile Picture</th>
-                        <th>Violation Type</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be loaded here by DataTables -->
-                </tbody>
-            </table>
+        <h2>Violations List</h2>
+              <table id="violationsTable" class="display" style="width:100%">
+                  <thead>
+                      <tr>
+                          <th>Record No</th>
+                          <th>Full Name</th>
+                          <th>Course, Year & Section</th>
+                          <th>Violation Type</th>
+                          <th>Offense Number</th>
+                          <th>Sanction</th>
+                          <th>Status</th>
+                          <th>Date Recorded</th>
+                    
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <!-- Data will be loaded here by DataTables -->
+                  </tbody>
+              </table>
         
         </div>
     </div>
@@ -290,27 +269,26 @@ $qrImage = $_SESSION['qr_image'];
     $('#violationsTable').DataTable({
         "ajax": {
             "url": "../process/fetch_student_violation.php",
-            "type": "POST"
+            "type": "GET",
+            "dataSrc": "data",
+            "error": function(xhr, error, thrown) {
+                console.error("AJAX error: ", error, thrown);
+            }
         },
         "columns": [
-            { "data": "violation_no" },
-            { "data": "student_id" },
+            { "data": "record_id" },
             { "data": "full_name" },
-            { "data": "section" },
+            { "data": "cys" },
+            { "data": "violation_name" },
+            { "data": "offense_count" },
             { 
-                "data": "profile_picture",
+                "data": "sanction_details",
                 "render": function(data, type, row) {
-                    return '<img src="' + data + '" alt="Profile Picture" width="50" height="50">';
+                    return data ? data : 'No sanction';
                 }
             },
-            { "data": "violation_type" },
             { "data": "status" },
-            { 
-                "data": null,
-                "render": function(data, type, row) {
-                    return '<button class="btn btn-primary">View</button>';
-                }
-            }
+            { "data": "date_of_offense" }
         ]
     });
 });

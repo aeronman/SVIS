@@ -8,18 +8,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $firstName = isset($_POST['firstName']) ? $_POST['firstName'] : '';
     $middleName = isset($_POST['middleName']) ? $_POST['middleName'] : '';
     $lastName = isset($_POST['lastName']) ? $_POST['lastName'] : '';
+    $year = isset($_POST['year']) ? $_POST['year'] : '';
+    $course = isset($_POST['course']) ? $_POST['course']: '';
     $section = isset($_POST['section']) ? $_POST['section'] : '';
     $email = isset($_POST['email']) ? $_POST['email'] : '';
+    $guardianname = isset($_POST['guardianName']) ? $_POST['guardianName'] : '';
+    $guardiannum = isset($_POST['guardinaContact']) ? $_POST['guardinaContact'] : '';
 
     $fullName= $_SESSION['id'];
 
     $conn = getDbConnection();
 
     if ($accountType === 'student') {
-        $sql = "UPDATE accounts SET first_name = ?, middle_name = ?, last_name = ?, section = ?, email = ? WHERE id = ? AND account_type = 'student'";
+        $sql = "UPDATE accounts SET first_name = ?, middle_name = ?, last_name = ?, course = ? , year = ?, section = ?, email = ? , guardian_name = ? , guardian_
+        contact = ? WHERE id = ? AND account_type = 'student'";
         
         if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param('sssssi', $firstName, $middleName, $lastName, $section, $email, $studentId);
+            $stmt->bind_param('sssssssssi', $firstName, $middleName, $lastName, $course, $year , $section, $email, $guardianname,$guardiannum, $studentId);
 
             if ($stmt->execute()) {
                         // Log the action after successful update

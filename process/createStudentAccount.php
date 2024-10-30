@@ -17,6 +17,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = isset($_POST['password']) ? $_POST['password'] : '';
     $profilePicture = isset($_POST['profilePicture']) ? $_POST['profilePicture'] : '';
     $qrImage = isset($_POST['qrImage']) ? $_POST['qrImage'] : '';
+    
+    // New fields
+    $course = isset($_POST['course']) ? $_POST['course'] : '';
+    $year = isset($_POST['year']) ? $_POST['year'] : '';
+    $guardianName = isset($_POST['guardianName']) ? $_POST['guardianName'] : '';
+    $guardianContact = isset($_POST['guardianContact']) ? $_POST['guardianContact'] : '';
 
     // Validate and sanitize inputs
     $studentId = filter_var($studentId, FILTER_SANITIZE_STRING);
@@ -27,8 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = filter_var($email, FILTER_VALIDATE_EMAIL);
     $username = filter_var($username, FILTER_SANITIZE_STRING);
     $password = filter_var($password, FILTER_SANITIZE_STRING);
+    $course = filter_var($course, FILTER_SANITIZE_STRING);
+    $year = filter_var($year, FILTER_SANITIZE_STRING);
+    $guardianName = filter_var($guardianName, FILTER_SANITIZE_STRING);
+    $guardianContact = filter_var($guardianContact, FILTER_SANITIZE_STRING);
 
-$fullName = $_SESSION['id'];
+    $fullName = $_SESSION['id'];
 
     if ($email === false) {
         echo json_encode(['error' => 'Invalid email address.']);
@@ -45,13 +55,13 @@ $fullName = $_SESSION['id'];
     $conn = getDbConnection();
 
     // Prepare SQL statement
-    $sql = "INSERT INTO accounts (id, first_name, middle_name, last_name, section, email, username, password, profile_picture, qr_image, account_type, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO accounts (id, first_name, middle_name, last_name, section, email, username, password, profile_picture, qr_image, account_type, created_at, course, year, guardian_name, guardian_contact) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     // Prepare statement
     if ($stmt = $conn->prepare($sql)) {
         // Bind parameters
-        $stmt->bind_param('ssssssssssss', $studentId, $firstName, $middleName, $lastName, $section, $email, $username, $hashedPassword, $profilePicture, $qrImage, $accountType, $createdAt);
+        $stmt->bind_param('ssssssssssssssss', $studentId, $firstName, $middleName, $lastName, $section, $email, $username, $hashedPassword, $profilePicture, $qrImage, $accountType, $createdAt, $course, $year, $guardianName, $guardianContact);
 
         // Execute the statement
         if ($stmt->execute()) {

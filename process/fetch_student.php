@@ -5,7 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = isset($_POST['id']) ? $_POST['id'] : '';
 
     $conn = getDbConnection();
-    $sql = "SELECT first_name, middle_name, last_name, section, profile_picture 
+    $sql = "SELECT first_name, middle_name, last_name, section,course,year, profile_picture 
             FROM accounts WHERE id = ?";
 
     if ($stmt = $conn->prepare($sql)) {
@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode([
                     'status' => 'success',
                     'fullName' => $fullName,
-                    'section' => $row['section'],
+                    'section' => $row['course'].' '.$row['year'].$row['section'],
                     'profilePicture' => $row['profile_picture']
                 ]);
             } else {

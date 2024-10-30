@@ -8,10 +8,10 @@ $today = date('Y-m-d');
 $firstDayOfMonth = date('Y-m-01');
 
 // SQL query to count violations where the violation date is today
-$sqlToday = "SELECT COUNT(*) as total_violations_today FROM violations WHERE DATE(date) = ?";
+$sqlToday = "SELECT COUNT(*) as total_violations_today FROM student_violations WHERE DATE(date_of_offense) = ?";
 
 // SQL query to count violations for the entire current month
-$sqlMonth = "SELECT COUNT(*) as total_violations_month FROM violations WHERE date BETWEEN ? AND ?";
+$sqlMonth = "SELECT COUNT(*) as total_violations_month FROM student_violations WHERE date_of_offense BETWEEN ? AND ?";
 
 // Prepare the first statement to get today's violations count
 if ($stmtToday = $conn->prepare($sqlToday)) {

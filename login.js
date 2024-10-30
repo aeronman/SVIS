@@ -23,4 +23,31 @@ $(document).ready(function () {
             }
         });
     });
+
+    $('#submitForgotPassword').on('click', function() {
+        const email = $('#emailInput').val();
+    
+        $.ajax({
+          url: 'process/forgotPassword.php',
+          type: 'POST',
+          data: { email: email },
+          dataType: 'json',
+          success: function(response) {
+            const messageElement = $('#forgotPasswordMessage');
+            if (response.success) {
+              messageElement.removeClass('text-danger').addClass('text-success');
+              messageElement.text('Temporary password sent to your email.');
+            } else {
+              messageElement.removeClass('text-success').addClass('text-danger');
+              messageElement.text(response.message || 'Email not found.');
+            }
+          },
+          error: function(xhr, status, error) {
+            console.error('AJAX error:', error);
+          }
+        });
+      });
+    
 });
+
+

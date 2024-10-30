@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $firstName = isset($_POST['firstName']) ? $_POST['firstName'] : '';
     $middleName = isset($_POST['middleName']) ? $_POST['middleName'] : '';
     $lastName = isset($_POST['lastName']) ? $_POST['lastName'] : '';
+    $email = isset($_POST['email']) ? $_POST['email'] : '';
     $username = isset($_POST['username']) ? $_POST['username'] : '';
     $password = isset($_POST['password']) ? $_POST['password'] : '';
     $profilePicture = isset($_POST['profilePicture']) ? $_POST['profilePicture'] : '';
@@ -22,8 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $lastName = filter_var($lastName, FILTER_SANITIZE_STRING);
     $username = filter_var($username, FILTER_SANITIZE_STRING);
     $password = filter_var($password, FILTER_SANITIZE_STRING);
+    $email = filter_var($email,FILTER_SANITIZE_STRING);
 
-$fullName = $_SESSION['id'];
+    $fullName = $_SESSION['id'];
 
     // Hash the password
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -35,13 +37,13 @@ $fullName = $_SESSION['id'];
     $conn = getDbConnection();
 
     // Prepare SQL statement
-    $sql = "INSERT INTO accounts (id, first_name, middle_name, last_name, username, password, profile_picture, account_type, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO accounts (id, first_name, middle_name, last_name, username, email, password, profile_picture, account_type, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 
     // Prepare statement
     if ($stmt = $conn->prepare($sql)) {
         // Bind parameters
-        $stmt->bind_param('sssssssss', $id, $firstName, $middleName, $lastName, $username, $hashedPassword, $profilePicture, $accountType, $createdAt);
+        $stmt->bind_param('ssssssssss', $id, $firstName, $middleName, $lastName, $username, $email, $hashedPassword, $profilePicture, $accountType, $createdAt);
 
         // Execute the statement
         if ($stmt->execute()) {

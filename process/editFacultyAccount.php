@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $middleName = isset($_POST['middleName']) ? $_POST['middleName'] : '';
     $lastName = isset($_POST['lastName']) ? $_POST['lastName'] : '';
     $advisoryClass = isset($_POST['advisoryClass']) ? $_POST['advisoryClass'] : '';
+    $email = isset($_POST['email']) ? $_POST['email'] : '';
 
     // Validate and sanitize input
     $facultyId = filter_var($facultyId, FILTER_SANITIZE_STRING);
@@ -18,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $middleName = filter_var($middleName, FILTER_SANITIZE_STRING);
     $lastName = filter_var($lastName, FILTER_SANITIZE_STRING);
     $advisoryClass = filter_var($advisoryClass, FILTER_SANITIZE_STRING);
+    $email = filter_var($email,FILTER_SANITIZE_STRING);
     $fullName = $_SESSION['id'];
 
     // Database connection
@@ -26,11 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if the accountType is faculty
     if ($accountType === 'faculty') {
         // Update query (ignoring profile_picture for now)
-        $sql = "UPDATE accounts SET first_name = ?, middle_name = ?, last_name = ?, advisory_class = ? WHERE id = ? AND account_type = 'faculty'";
+        $sql = "UPDATE accounts SET first_name = ?, middle_name = ?, last_name = ?, advisory_class = ? , email = ? WHERE id = ? AND account_type = 'faculty'";
 
         if ($stmt = $conn->prepare($sql)) {
             // Bind parameters
-            $stmt->bind_param('ssssi', $firstName, $middleName, $lastName, $advisoryClass, $facultyId);
+            $stmt->bind_param('sssssi', $firstName, $middleName, $lastName, $advisoryClass, $email, $facultyId);
 
             // Execute the statement
             if ($stmt->execute()) {

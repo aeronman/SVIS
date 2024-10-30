@@ -26,7 +26,11 @@ if($stmt = $conn->prepare($sql)){
         $qr = $row['qr_image'];
         $advisory = $row['advisory_class'];
         $email = $row['email'];
+        $course = $row['course'];
+        $year = $row['year'];
         $section = $row['section'];
+        $guardianname = $row['guardian_name'];
+        $guardiancontact = $row['guardian_contact'];
     }
 }
 ?>
@@ -87,7 +91,7 @@ if($stmt = $conn->prepare($sql)){
           </li>
         </ul>
         <ul class="navbar-nav navbar-nav-right">
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
               <i class="icon-bell mx-0"></i>
               <span class="count"></span>
@@ -134,7 +138,7 @@ if($stmt = $conn->prepare($sql)){
                 </div>
               </a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
               <img src="<?=$profilePicture?>" alt="profile"/>
@@ -278,6 +282,25 @@ if($stmt = $conn->prepare($sql)){
                                 <label for="studentLastName">Last Name</label>
                                 <input type="text" class="form-control" id="studentLastName" placeholder="Enter last name" value="<?php if($userType == 'student'){ echo $lastname;}?>">
                             </div>
+
+                            <!-- Course Field -->
+                            <div class="form-group">
+                                <label for="studentCourse">Course</label>
+                                <input type="text" class="form-control" id="studentCourse" placeholder="Enter course" value="<?php if($userType == 'student'){ echo $course;}?>">
+                            </div>
+                        
+                            <!-- Year Field -->
+                            <div class="form-group">
+                                <label for="studentYear">Year</label>
+                                <select class="form-control" id="studentYear">
+                                    <option value="">Select Year</option>
+                                    <option value="1" <?php if($year == '1') echo 'selected'; ?>>First Year</option>
+                                    <option value="2" <?php if($year == '2') echo 'selected'; ?>>Second Year</option>
+                                    <option value="3" <?php if($year == '3') echo 'selected'; ?>>Third Year</option>
+                                    <option value="4" <?php if($year == '4') echo 'selected'; ?>>Fourth Year</option>
+                                </select>
+                            </div>
+                            
                             
                             <!-- Section Field -->
                             <div class="form-group">
@@ -289,6 +312,18 @@ if($stmt = $conn->prepare($sql)){
                             <div class="form-group">
                                 <label for="studentEmail">Email</label>
                                 <input type="email" class="form-control" id="studentEmail" placeholder="Enter email" value="<?php if($userType == 'student'){ echo $email;}?>">
+                            </div>
+
+                            <!-- Guardian Name Field -->
+                            <div class="form-group">
+                                <label for="guardianName">Guardian Name</label>
+                                <input type="text" class="form-control" id="guardianName" placeholder="Enter guardian name" value="<?php if($userType == 'student'){ echo $guardianname;}?>">
+                            </div>
+
+                             <!-- Guardian Contact Field -->
+                             <div class="form-group">
+                                <label for="guardianContactNumber">Guardian Contact Number</label>
+                                <input type="text" class="form-control" id="guardianContactNumber" placeholder="Enter guardian contact number" value="<?php if($userType == 'student'){ echo $guardiancontact;}?>">
                             </div>
                         
                             
@@ -314,6 +349,12 @@ if($stmt = $conn->prepare($sql)){
                                 <label for="adminLastName">Last Name</label>
                                 <input type="text" class="form-control" id="adminLastName" placeholder="Enter last name" value="<?php if($userType == 'admin'){ echo $lastname;}?>">
                             </div>
+                             <!-- Email Field -->
+                             <div class="form-group">
+                                <label for="adminEmail">Email</label>
+                                <input type="email" class="form-control" id="adminEmail" placeholder="Enter email" value="<?php if($userType == 'admin'){ echo $email;}?>">
+                            </div>
+
                             
             
                         </div>
@@ -337,6 +378,12 @@ if($stmt = $conn->prepare($sql)){
                                 <label for="superAdminLastName">Last Name</label>
                                 <input type="text" class="form-control" id="superAdminLastName" placeholder="Enter last name" value="<?php if($userType == 'superadmin'){ echo $lastname;}?>">
                             </div>
+                             <!-- Email Field -->
+                             <div class="form-group">
+                                <label for="superAdminEmail">Email</label>
+                                <input type="email" class="form-control" id="superAdminEmail" placeholder="Enter email" value="<?php if($userType == 'superadmin'){ echo $email;}?>">
+                            </div>
+
                          
                         </div>
                         <!-- Fields for Clerk -->
@@ -359,7 +406,12 @@ if($stmt = $conn->prepare($sql)){
                                 <label for="clerkLastName">Last Name</label>
                                 <input type="text" class="form-control" id="clerkLastName" placeholder="Enter last name" value="<?php if($userType == 'clerk'){ echo $lastname;}?>">
                             </div>
-                            
+                             <!-- Email Field -->
+                             <div class="form-group">
+                                <label for="clerkEmail">Email</label>
+                                <input type="email" class="form-control" id="clerkEmail" placeholder="Enter email" value="<?php if($userType == 'clerk'){ echo $email;}?>">
+                            </div>
+
                         
                         </div>
                         <!-- Fields for Faculty -->
@@ -395,6 +447,12 @@ if($stmt = $conn->prepare($sql)){
                                 <label for="facultyAdvisoryClass">Advisory Class</label>
                                 <input type="text" class="form-control" id="facultyAdvisoryClass" placeholder="Enter advisory class">
                             </div>
+                             <!-- Email Field -->
+                             <div class="form-group">
+                                <label for="facultyEmail">Email</label>
+                                <input type="email" class="form-control" id="facultyEmail" placeholder="Enter email" value="<?php if($userType == 'faculty'){ echo $email;}?>">
+                            </div>
+
 
                         </div>
                         <button type="submit" class="btn btn-primary" id="submitEditAccountForm">Edit Account</button>

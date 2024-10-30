@@ -4,6 +4,37 @@ $id = $_SESSION['id'];
 $fullName = $_SESSION['full_name'];
 $profilePicture = $_SESSION['profile_picture'];
 $qrImage = $_SESSION['qr_image'];
+
+require_once '../process/db_connection.php';
+
+// Database connection
+$conn = getDbConnection();
+
+// Prepare the statement
+$stmt = $conn->prepare("
+    SELECT sv.*, v.violation_name, s.sanction_details 
+    FROM student_violations sv
+    JOIN violations v ON sv.violation_id = v.violation_id
+    JOIN sanctions s ON sv.sanction_id = s.sanction_id
+    WHERE sv.student_id = ?
+    ORDER BY sv.date_of_offense DESC
+    LIMIT 1
+");
+
+// Bind parameters
+$stmt->bind_param("i", $id);
+
+// Execute the statement
+$stmt->execute();
+
+// Get the result
+$result = $stmt->get_result();
+
+// Fetch the most recent violation
+$recentViolation = $result->fetch_assoc();
+
+$stmt->close();
+$conn ->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -53,7 +84,7 @@ $qrImage = $_SESSION['qr_image'];
           </li>
         </ul>
         <ul class="navbar-nav navbar-nav-right">
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
               <i class="icon-bell mx-0"></i>
               <span class="count"></span>
@@ -100,7 +131,7 @@ $qrImage = $_SESSION['qr_image'];
                 </div>
               </a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
               <img src="<?php echo $_SESSION['profile_picture']?>" alt="profile"/>
@@ -157,7 +188,7 @@ $qrImage = $_SESSION['qr_image'];
             <a class="nav-link active" href="index.php">
               <i class="icon-grid menu-icon"></i>
               <span class="menu-title">Dashboard</span>
-            </a>
+            </a>  
           </li>
           <li class="nav-item">
             <a class="nav-link" href="violations.php">
@@ -202,10 +233,26 @@ $qrImage = $_SESSION['qr_image'];
               </div>
             </div>
           </div>
+          <div class="row mt-5">
+                    <div class="col-md-12 grid-margin">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Most Recent Violation</h5>
+                                <?php if ($recentViolation): ?>
+                                    <p class="card-text">Violation Name: <?= htmlspecialchars($recentViolation['violation_name']) ?></p>
+                                    <p class="card-text">Sanction Details: <?= htmlspecialchars($recentViolation['sanction_details']) ?></p>
+                                    <p class="card-text">Date: <?= htmlspecialchars($recentViolation['date_of_offense']) ?></p>
+                                <?php else: ?>
+                                    <p>No violations found.</p>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         <div class="row mt-5">
           <div class="col-md-12 grid-margin">
             <div class="card" style="width: 18rem;">
-                <img src="<?= $profilePicture ?>" class="card-img-top" alt="Profile Picture">
+        
                 <div class="card-body">
                     <h5 class="card-title"><?= $fullName ?></h5>
                     <p class="card-text">ID: <?= $id ?></p>
@@ -215,6 +262,8 @@ $qrImage = $_SESSION['qr_image'];
             </div>
           </div>
         </div>
+   
+
   
         <!-- content-wrapper ends -->
         <!-- partial:partials/_footer.html -->

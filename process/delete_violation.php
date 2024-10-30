@@ -3,22 +3,22 @@ session_start();
 require_once 'db_connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $violation_id = isset($_POST['violation_id']) ? $_POST['violation_id'] : '';
-$fullName = $_SESSION['id'];
-    if ($violation_id) {
+    $record_id = isset($_POST['record_id']) ? $_POST['record_id'] : '';
+    $fullName = $_SESSION['id'];
+    if ($record_id) {
         $conn = getDbConnection();
 
         // Move the record to archived_accounts before deletion
-        $sqlArchive = "INSERT INTO archived_violation 
-                       SELECT * FROM violations WHERE violation_no = ?";
+        $sqlArchive = "INSERT INTO archived_student_violations 
+                       SELECT * FROM student_violations WHERE record_id = ?";
         $stmtArchive = $conn->prepare($sqlArchive);
-        $stmtArchive->execute([$violation_id]);
+        $stmtArchive->execute([$record_id]);
 
         // Delete the record from violations table
-        $sqlDelete = "DELETE FROM violations WHERE violation_no = ?";
+        $sqlDelete = "DELETE FROM student_violations WHERE record_id = ?";
         $stmtDelete = $conn->prepare($sqlDelete);
 
-        if ($stmtDelete->execute([$violation_id])) {
+        if ($stmtDelete->execute([$record_id])) {
              // Log the action after successful update
              $logSql = "INSERT INTO logs (action_performed, performed_by, logged_date) VALUES (?, ?, ?)";
              if ($logStmt = $conn->prepare($logSql)) {

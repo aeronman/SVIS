@@ -8,7 +8,7 @@ $firstDayOfMonth = date('Y-m-01');
 $today = date('Y-m-d');
 
 // SQL query to count violations for the entire current month
-$sqlMonth = "SELECT COUNT(*) as total_violations_month FROM violations WHERE date BETWEEN ? AND ?";
+$sqlMonth = "SELECT COUNT(*) as total_violations_month FROM student_violations WHERE date_of_offense BETWEEN ? AND ?";
 
 if ($stmtMonth = $conn->prepare($sqlMonth)) {
     $stmtMonth->bind_param('ss', $firstDayOfMonth, $today);

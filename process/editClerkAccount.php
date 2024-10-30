@@ -8,16 +8,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $firstName = isset($_POST['firstName']) ? $_POST['firstName'] : '';
     $middleName = isset($_POST['middleName']) ? $_POST['middleName'] : '';
     $lastName = isset($_POST['lastName']) ? $_POST['lastName'] : '';
+    $email = isset($_POST['email']) ? $_POST['email'] : '';
 
 $fullName = $_SESSION['id'];
 
     $conn = getDbConnection();
 
     if ($accountType === 'clerk') {
-        $sql = "UPDATE accounts SET first_name = ?, middle_name = ?, last_name = ? WHERE id = ? AND account_type = 'clerk'";
+        $sql = "UPDATE accounts SET first_name = ?, middle_name = ?, last_name = ? , email = ? WHERE id = ? AND account_type = 'clerk'";
         
         if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param('sssi', $firstName, $middleName, $lastName, $clerkId);
+            $stmt->bind_param('ssssi', $firstName, $middleName, $lastName, $email,$clerkId);
 
             if ($stmt->execute()) {
                      // Log the action after successful update

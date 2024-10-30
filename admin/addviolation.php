@@ -1,7 +1,7 @@
 <?php
 
 require_once '../process/db_connection.php';
-include('../process/checkFacultySession.php');
+include('../process/checkAdminSession.php');
 $id = $_SESSION['id'];
 $fullName = $_SESSION['full_name'];
 $profilePicture = $_SESSION['profile_picture'];
@@ -49,8 +49,8 @@ $qrImage = $_SESSION['qr_image'];
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo mr-5" href="index.php"><h4 class="text-dark">Faculty</h4></a>
-        <a class="navbar-brand brand-logo-mini" href="index.php"><h4 class="text-dark">F</h4></a>
+        <a class="navbar-brand brand-logo mr-5" href="index.php"><h4 class="text-dark">Admin</h4></a>
+        <a class="navbar-brand brand-logo-mini" href="index.php"><h4 class="text-dark">A</h4></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -68,7 +68,7 @@ $qrImage = $_SESSION['qr_image'];
             </div>
           </li>
         </ul>
-        <ul class="navbar-nav navbar-nav-right">
+        <!-- <ul class="navbar-nav navbar-nav-right">
           <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
               <i class="icon-bell mx-0"></i>
@@ -137,7 +137,7 @@ $qrImage = $_SESSION['qr_image'];
               <i class="icon-ellipsis"></i>
             </a>
           </li>
-        </ul>
+        </ul> -->
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
           <span class="icon-menu"></span>
         </button>
@@ -175,8 +175,15 @@ $qrImage = $_SESSION['qr_image'];
               <span class="menu-title">Dashboard</span>
             </a>
           </li>
-          
-          <li class="nav-item">
+        
+          <li class="nav-item ">
+            <a class="nav-link" href="accounts.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-head menu-icon"></i>
+              <span class="menu-title">Accounts</span>
+            </a>
+          </li>
+
+          <li class="nav-item active">
             <a class="nav-link" href="violations.php" aria-expanded="false" aria-controls="auth">
               <i class="icon-ban menu-icon"></i>
               <span class="menu-title">Violations</span>
@@ -243,40 +250,59 @@ $qrImage = $_SESSION['qr_image'];
                     <!-- Student details will be displayed here -->
                 </div>
                 <div class="modal fade" id="violationModal" tabindex="-1" aria-labelledby="violationModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="violationModalLabel">Add Violation</h5>
-                                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="violationForm">
-                                    <input type="hidden" name="studentId" id="violationStudentId">
-                                    <div class="form-group">
-                                        <label for="fullName">Full Name</label>
-                                        <input type="text" class="form-control" id="fullName" name="fullName" readonly>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="section">Section</label>
-                                        <input type="text" class="form-control" id="section" name="section" readonly>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="profilePicture">Profile Picture</label>
-                                        <img id="profilePicture" src="" alt="Profile Picture" class="img-fluid">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="violationType">Violation</label>
-                                        <select class="form-control" id="violationType" name="violationType">
-                                            <option value="improper_uniform">Improper Uniform</option>
-                                            <option value="illegal_items">Illegal Items</option>
-                                        </select>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Submit Violation</button>
-                                </form>
-                            </div>
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="violationModalLabel">Add Violation</h5>
+                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"> 
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="violationForm">
+                                <input type="hidden" name="studentId" id="violationStudentId">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name</label>
+                                    <input type="text" class="form-control" id="fullName" name="fullName" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="section">Section</label>
+                                    <input type="text" class="form-control" id="section" name="section" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="profilePicture">Profile Picture</label>
+                                    <img id="profilePicture" src="" alt="Profile Picture" class="img-fluid">
+                                </div>
+                                <div class="form-group">
+                                    <label for="violationType">Violation</label>
+                                    <select class="form-control" id="violationType" name="violationType">
+                                        <!-- Options will be populated from the database -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="offenseCount">Offense Count</label>
+                                    <select class="form-control" id="offenseCount" name="offenseCount">
+                                        <option value="1">1st Offense</option>
+                                        <option value="2">2nd Offense</option>
+                                        <option value="3">3rd Offense</option>
+                                        <option value="4">4th Offense</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" style="display:none;">
+                                 <input  type="hidden" class="form-control" id="sanction_id" name="sanction_id" readonly>
+                                </div>
+                               
+                                    <label for="sanction">Sanction</label>
+                                    <p id="sanction" readonly></p>
+                              
+                                <button type="submit" id="submitButton" class="btn btn-primary">Submit Violation</button>
+                            </form>
                         </div>
                     </div>
                 </div>
+            </div>
+
         </div>
 
     
@@ -341,7 +367,7 @@ $qrImage = $_SESSION['qr_image'];
                                 <div>
                                     <h5>Student Details</h5>
                                     <p><strong>Full Name:</strong> ${data.fullName}</p>
-                                    <p><strong>Section:</strong> ${data.section}</p>
+                                    <p><strong>Course, Year & Section:</strong> ${data.section}</p>
                                     <img src="${data.profilePicture}" alt="Profile Picture" class="img-fluid">
                                     <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#violationModal">Add Violation</button>
                                 </div>
@@ -398,27 +424,101 @@ $qrImage = $_SESSION['qr_image'];
                 }
             });
 
-           
-            // Handle violation form submission
-            $('#violationForm').submit(function(e) {
-                e.preventDefault();
-                $.ajax({
-                    url: '../process/submit_violation.php',
-                    type: 'POST',
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        var data = JSON.parse(response);
-                        if (data.status === 'success') {
-                            alert(data.message);
-                            $('#violationModal').modal('hide');
-                        } else {
-                            alert(data.message);
-                        }
-                    }
+
+    const $violationSelect = $('#violationType');
+    const $offenseCountSelect = $('#offenseCount');
+    const $sanctionDisplay = $('#sanction');
+    const $sanctionid = $('#sanction_id');
+
+    // Function to fetch violations from the database
+    function fetchViolations() {
+        $.ajax({
+            url: '../process/fetch_violations_dropdown.php', 
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                $violationSelect.empty(); // Clear existing options
+                $.each(data, function (index, violation) {
+                    $violationSelect.append($('<option>', {
+                        value: violation.violation_id, 
+                        text: violation.violation_name 
+                    }));
                 });
-            });
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching violations:', error);
+            }
         });
-    </script>
+    }
+
+    // Function to get the sanction based on selected violation and offense count
+    function fetchSanction(violationId, offenseCount) {
+        $.ajax({
+            url: '../process/fetch_sanction.php', // Your PHP file to fetch sanction
+            type: 'GET',
+            data: {
+                violationId: violationId,
+                offenseCount: offenseCount
+            },
+            dataType: 'json',
+            success: function (data) {
+                $sanctionDisplay.text(data.sanction_details); // Assuming the response has a 'sanction' field
+                $sanctionid.val(data.sanction_id);
+                console.log($sanctionid.val());
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching sanction:', error);
+            }
+        });
+    }
+
+    // Event listeners
+    $violationSelect.change(function () {
+        fetchSanction($(this).val(), $offenseCountSelect.val());
+    });
+
+    $offenseCountSelect.change(function () {
+        fetchSanction($violationSelect.val(), $(this).val());
+    });
+
+    // Initial fetch of violations when the modal is opened
+    $('#violationModal').on('show.bs.modal', function () {
+        fetchViolations();
+    });
+
+           
+  // Handle violation form submission
+    $('#violationForm').submit(function(e) {
+        e.preventDefault();
+
+        // Disable the submit button to prevent multiple submissions
+        $('#submitButton').prop('disabled', true);
+
+        $.ajax({
+            url: '../process/submit_violation.php',
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                var data = JSON.parse(response);
+                if (data.status === 'success') {
+                    alert(data.message);
+                    $('#violationModal').modal('hide');
+                } else {
+                    alert(data.message);
+                }
+            },
+            error: function() {
+                alert('An error occurred while submitting the form.');
+            },
+            complete: function() {
+                // Re-enable the submit button after the request is done
+                $('#submitButton').prop('disabled', false);
+            }
+        });
+    });
+
+ });
+</script>
 
   
 </body>

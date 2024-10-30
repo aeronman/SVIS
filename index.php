@@ -67,10 +67,10 @@ include('process/checkIfLoggedIn.php');
 
               <form id="loginForm" class="pt-3">
                 <div class="form-group">
-                  <input type="text" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Username" required>
+                  <input type="text" class="form-control form-control-lg text-white" id="exampleInputEmail1" placeholder="Username" required>
                 </div>
                 <div class="form-group">
-                  <input type="password" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="Password" required>
+                  <input type="password" class="form-control form-control-lg text-white" id="exampleInputPassword1" placeholder="Password" required>
                 </div>
                 <div class="mt-3">
                   <button type="button" id="submitLoginForm" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">LOGIN</button>
@@ -79,9 +79,36 @@ include('process/checkIfLoggedIn.php');
                   <div class="form-check">
 
                   </div>
-                  <a href="#" class="auth-link text-white">Forgot password?</a>
+                  <a href="#" class="auth-link text-white" data-toggle="modal" data-target="#forgotPasswordModal">Forgot password?</a>
+
                 </div>
               </form>
+
+              <!-- Forgot Password Modal -->
+              <div class="modal fade" id="forgotPasswordModal" tabindex="-1" role="dialog" aria-labelledby="forgotPasswordLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="forgotPasswordLabel">Forgot Password</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                    <form id="forgotPasswordForm">
+                          <div class="form-group">
+                            <label for="emailInput">Enter your email address</label>
+                            <input type="email" class="form-control" id="emailInput" placeholder="Email" required>
+                          </div>
+                          <div id="forgotPasswordMessage" class="text-danger mt-2"></div>
+                          <button type="button" class="btn btn-primary" id="submitForgotPassword">Submit</button>
+                        </form>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>

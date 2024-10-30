@@ -5,18 +5,22 @@ header('Content-Type: application/json');
 
 $conn = getDbConnection();
 
-// Define the query to fetch data from violations and join with accounts
+// Define the query to fetch data from violations and join with accounts and sanctions tables
 $sql = "
     SELECT
-        v.violation_no,
-        v.student_id,
+        sv.record_id,
+        sv.student_id,
         CONCAT(a.first_name, ' ', COALESCE(a.middle_name, ''), ' ', a.last_name) AS full_name,
-        a.profile_picture,
-        a.section,
-        v.violation_type,
-        v.status
-    FROM violations v
-    JOIN accounts a ON v.student_id = a.id
+        CONCAT(a.course, ' ', a.year, a.section) AS cys,
+        v.violation_name,
+        sv.offense_count,
+        s.sanction_details,
+        sv.status,
+        sv.date_of_offense
+    FROM student_violations sv
+    JOIN accounts a ON sv.student_id = a.id
+    LEFT JOIN sanctions s ON sv.sanction_id = s.sanction_id
+    LEFT JOIN violations v ON sv.violation_id = v.violation_id
 ";
 
 if ($stmt = $conn->prepare($sql)) {

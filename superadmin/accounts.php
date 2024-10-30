@@ -61,7 +61,7 @@ $qrImage = $_SESSION['qr_image'];
           </li>
         </ul>
         <ul class="navbar-nav navbar-nav-right">
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
               <i class="icon-bell mx-0"></i>
               <span class="count"></span>
@@ -108,7 +108,7 @@ $qrImage = $_SESSION['qr_image'];
                 </div>
               </a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
               <img src="<?=$profilePicture?>" alt="profile"/>
@@ -248,65 +248,92 @@ $qrImage = $_SESSION['qr_image'];
 
 
 
-                        <!-- Fields for Student -->
-                        <div id="studentFields" class="hidden">
-                            <div class="form-group">
-                                <label for="studentId">Student ID</label>
-                                <input type="text" class="form-control" id="studentId" placeholder="Enter student ID">
-                            </div>
-                            
-                            <!-- First Name Field -->
-                            <div class="form-group">
-                                <label for="studentFirstName">First Name</label>
-                                <input type="text" class="form-control" id="studentFirstName" placeholder="Enter first name">
-                            </div>
-                            
-                            <!-- Middle Name Field -->
-                            <div class="form-group">
-                                <label for="studentMiddleName">Middle Name</label>
-                                <input type="text" class="form-control" id="studentMiddleName" placeholder="Enter middle name">
-                            </div>
-                            
-                            <!-- Last Name Field -->
-                            <div class="form-group">
-                                <label for="studentLastName">Last Name</label>
-                                <input type="text" class="form-control" id="studentLastName" placeholder="Enter last name">
-                            </div>
-                            
-                            <!-- Section Field -->
-                            <div class="form-group">
-                                <label for="studentSection">Section</label>
-                                <input type="text" class="form-control" id="studentSection" placeholder="Enter section">
-                            </div>
-                            
-                            <!-- Email Field -->
-                            <div class="form-group">
-                                <label for="studentEmail">Email</label>
-                                <input type="email" class="form-control" id="studentEmail" placeholder="Enter email">
-                            </div>
-                            
-                            <!-- Username Field -->
-                            <div class="form-group">
-                                <label for="studentUsername">Username</label>
-                                <input type="text" class="form-control" id="studentUsername" placeholder="Enter username">
-                            </div>
-                            
-                            <!-- Password Field -->
-                            <div class="form-group">
-                                <label for="studentPassword">Password</label>
-                                <input type="password" class="form-control" id="studentPassword" placeholder="Enter password">
-                            </div>
-                            
-                            <!-- Profile Picture Field -->
-                            <div class="form-group">
-                                <label for="studentProfilePicture">Profile Picture</label>
-                                <input type="file" class="form-control-file" id="studentProfilePicture" accept="image/*">
-                                <div class="mt-2">
-                                    <img id="studentProfilePreview" src="" alt="Profile Picture Preview" style="display:none; max-width: 200px; height: auto;">
-                                </div>
-                            </div>
+                       <!-- Fields for Student -->
+                      <div id="studentFields" class="hidden">
+                          <div class="form-group">
+                              <label for="studentId">Student ID</label>
+                              <input type="text" class="form-control" id="studentId" placeholder="Enter student ID">
+                          </div>
                           
-                        </div>
+                          <!-- First Name Field -->
+                          <div class="form-group">
+                              <label for="studentFirstName">First Name</label>
+                              <input type="text" class="form-control" id="studentFirstName" placeholder="Enter first name">
+                          </div>
+                          
+                          <!-- Middle Name Field -->
+                          <div class="form-group">
+                              <label for="studentMiddleName">Middle Name</label>
+                              <input type="text" class="form-control" id="studentMiddleName" placeholder="Enter middle name">
+                          </div>
+                          
+                          <!-- Last Name Field -->
+                          <div class="form-group">
+                              <label for="studentLastName">Last Name</label>
+                              <input type="text" class="form-control" id="studentLastName" placeholder="Enter last name">
+                          </div>
+                           <!-- Course Field -->
+                           <div class="form-group">
+                              <label for="studentCourse">Course</label>
+                              <input type="text" class="form-control" id="studentCourse" placeholder="Enter course">
+                          </div>
+                          
+                          <!-- Year Field -->
+                          <div class="form-group">
+                              <label for="studentYear">Year</label>
+                              <select class="form-control" id="studentYear">
+                                  <option value="">Select Year</option>
+                                  <option value="1">First Year</option>
+                                  <option value="2">Second Year</option>
+                                  <option value="3">Third Year</option>
+                                  <option value="4">Fourth Year</option>
+                              </select>
+                          </div>
+                          
+                          <!-- Section Field -->
+                          <div class="form-group">
+                              <label for="studentSection">Section</label>
+                              <input type="text" class="form-control" id="studentSection" placeholder="Enter section">
+                          </div>
+                          
+                          <!-- Email Field -->
+                          <div class="form-group">
+                              <label for="studentEmail">Email</label>
+                              <input type="email" class="form-control" id="studentEmail" placeholder="Enter email">
+                          </div>
+                            <!-- Guardian Name Field -->
+                            <div class="form-group">
+                              <label for="guardianName">Guardian Name</label>
+                              <input type="text" class="form-control" id="guardianName" placeholder="Enter guardian name">
+                          </div>
+
+                          <!-- Guardian Contact Number Field -->
+                          <div class="form-group">
+                              <label for="guardianContactNumber">Guardian Contact Number</label>
+                              <input type="text" class="form-control" id="guardianContactNumber" placeholder="Enter guardian contact number">
+                          </div>
+                          <!-- Username Field -->
+                          <div class="form-group">
+                              <label for="studentUsername">Username</label>
+                              <input type="text" class="form-control" id="studentUsername" placeholder="Enter username">
+                          </div>
+                          
+                          <!-- Password Field -->
+                          <div class="form-group">
+                              <label for="studentPassword">Password</label>
+                              <input type="password" class="form-control" id="studentPassword" placeholder="Enter password">
+                          </div>
+                          
+                          <!-- Profile Picture Field -->
+                          <div class="form-group">
+                              <label for="studentProfilePicture">Profile Picture</label>
+                              <input type="file" class="form-control-file" id="studentProfilePicture" accept="image/*">
+                              <div class="mt-2">
+                                  <img id="studentProfilePreview" src="" alt="Profile Picture Preview" style="display:none; max-width: 200px; height: auto;">
+                              </div>
+                          </div>          
+                      </div>
+
 
                         <!-- Fields for Admin -->
                         <div id="adminFields" class="hidden">
@@ -328,6 +355,11 @@ $qrImage = $_SESSION['qr_image'];
                                 <label for="adminLastName">Last Name</label>
                                 <input type="text" class="form-control" id="adminLastName" placeholder="Enter last name">
                             </div>
+             
+                          <div class="form-group">
+                              <label for="adminEmail">Email</label>
+                              <input type="email" class="form-control" id="adminEmail" placeholder="Enter email">
+                          </div>
                             
                             <div class="form-group">
                                 <label for="adminUsername">Username</label>
@@ -370,6 +402,10 @@ $qrImage = $_SESSION['qr_image'];
                                 <label for="superAdminLastName">Last Name</label>
                                 <input type="text" class="form-control" id="superAdminLastName" placeholder="Enter last name">
                             </div>
+                            <div class="form-group">
+                              <label for="superAdminEmail">Email</label>
+                              <input type="email" class="form-control" id="superAdminEmail" placeholder="Enter email">
+                          </div>
                             
                             <div class="form-group">
                                 <label for="superAdminUsername">Username</label>
@@ -410,6 +446,11 @@ $qrImage = $_SESSION['qr_image'];
                           <div class="form-group">
                               <label for="clerkLastName">Last Name</label>
                               <input type="text" class="form-control" id="clerkLastName" placeholder="Enter last name">
+                          </div>
+
+                          <div class="form-group">
+                              <label for="clerkEmail">Email</label>
+                              <input type="email" class="form-control" id="clerkEmail" placeholder="Enter email">
                           </div>
                           
                           <div class="form-group">
@@ -458,6 +499,11 @@ $qrImage = $_SESSION['qr_image'];
                             <label for="facultyLastName">Last Name</label>
                             <input type="text" class="form-control" id="facultyLastName" placeholder="Enter last name">
                         </div>
+
+                        <div class="form-group">
+                              <label for="facultyEmail">Email</label>
+                              <input type="email" class="form-control" id="facultyEmail" placeholder="Enter email">
+                          </div>
                         
                         <!-- Username Field -->
                         <div class="form-group">
@@ -490,6 +536,7 @@ $qrImage = $_SESSION['qr_image'];
 
                         <button type="submit" class="btn btn-primary" id="submitAccountForm">Create Account</button>
                     </form>
+                    <div id="modalAlertContainer"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -528,17 +575,16 @@ $qrImage = $_SESSION['qr_image'];
             <h4 class="card-title">Accounts</h4>
             
             <!-- Dropdown Filter -->
-            <div class="form-group">
-                <label for="accountTypeFilter">Filter by Account Type</label>
-                <select class="form-control" id="accountTypeFilter">
-                    <option value="">Select Account Type</option>
-                    <option value="student">Student</option>
-                    <option value="admin">Admin</option>
-                    <option value="superadmin">Superadmin</option>
-                    <option value="clerk">Clerk</option>
-                    <option value="faculty">Faculty</option>
-                </select>
-            </div>
+          <div class="form-group">
+              <label for="accountTypeFilter">Filter by Account Type</label>
+              <select class="form-control" id="accountTypeFilter">
+                  <option value="student" selected>Student</option>
+                  <option value="admin">Admin</option>
+                  <option value="clerk">Clerk</option>
+                  <option value="faculty">Faculty</option>
+              </select>
+          </div>
+
 
             <div class="table-responsive">
                 <table class="table table-hover" id="accountsTable">
@@ -557,38 +603,52 @@ $qrImage = $_SESSION['qr_image'];
 </div>
 
 <script>
-document.getElementById('accountTypeFilter').addEventListener('change', function () {
-    var accountType = this.value;
+document.addEventListener('DOMContentLoaded', function () {
 
-    // AJAX request to fetch data based on selected account type
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '../process/fetchAccounts.php', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            var response = JSON.parse(xhr.responseText);
+    const accountTypeFilter = document.getElementById('accountTypeFilter');
 
-            // Destroy existing DataTable before updating data
-            if ($.fn.DataTable.isDataTable('#accountsTable')) {
-                $('#accountsTable').DataTable().clear().destroy();
+    // Function to fetch and display accounts based on the selected account type
+    function fetchAccounts(accountType) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '../process/fetchAccounts.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+
+                // Destroy existing DataTable before updating data
+                if ($.fn.DataTable.isDataTable('#accountsTable')) {
+                    $('#accountsTable').DataTable().clear().destroy();
+                }
+
+                // Insert headers and rows into the table
+                document.querySelector('#accountsTable thead #tableHeaders').innerHTML = response.headers;
+                document.querySelector('#accountsTable tbody').innerHTML = response.rows;
+
+                // Re-initialize DataTable with updated data
+                $('#accountsTable').DataTable({
+                    "processing": true,
+                    "searching": true,
+                    "paging": true,
+                    "ordering": true,
+                    "order": [] // Disable initial sorting to avoid sorting errors
+                });
             }
+        };
+        xhr.send('accountType=' + encodeURIComponent(accountType));
+    }
 
-            // Ensure headers and rows are correctly inserted into the table
-            document.querySelector('#accountsTable thead #tableHeaders').innerHTML = response.headers;
-            document.querySelector('#accountsTable tbody').innerHTML = response.rows;
+    // Preload student accounts on page load
+    if (accountTypeFilter.value == "student") {
+        fetchAccounts('student'); // Fetch and load student accounts
+    }
 
-            // Re-initialize DataTable with proper settings
-            $('#accountsTable').DataTable({
-                "processing": true,
-                "searching": true,
-                "paging": true,
-                "ordering": true,
-                "order": [] // Disable initial sorting to avoid sorting errors
-            });
-        }
-    };
-    xhr.send('accountType=' + encodeURIComponent(accountType));
+    // Event listener for dropdown change to fetch selected account type
+    accountTypeFilter.addEventListener('change', function () {
+        fetchAccounts(this.value);
+    });
 });
+
 
 
 function confirmDelete(id) {

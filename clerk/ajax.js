@@ -474,19 +474,7 @@ $(document).ready(function () {
             return;
         }
     
-        // Check if the email already exists before proceeding
-        checkEmailExists(email, function(exists) {
-            if (exists) {
-                $('#alertContainer').html(`
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        This email is already in use. Please use a different email.
-                        <button type="button" class="btn-close border-0 bg-transparent position-absolute top-0 end-0" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                `);
-            } else {
-                // Submit the form data via AJAX if email does not exist
+        
                 $.ajax({
                     url: ajaxUrl,
                     type: 'POST',
@@ -496,8 +484,8 @@ $(document).ready(function () {
                     success: handleAjaxResponse,
                     error: handleAjaxError
                 });
-            }
-        });
+            
+       
     });
     
     $('#deleteForm').on('submit', function(e) {

@@ -29,6 +29,8 @@
     <link rel="shortcut icon" href="../images/logo2.webp" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.3/css/buttons.dataTables.min.css">
     <script src="ajax.js"></script>
     <style>
           .hidden {
@@ -138,11 +140,11 @@
                 </a>
               </div>
             </li>
-            <li class="nav-item nav-settings d-none d-lg-flex">
+            <!-- <li class="nav-item nav-settings d-none d-lg-flex">
               <a class="nav-link" href="#">
                 <i class="icon-ellipsis"></i>
               </a>
-            </li>
+            </li> -->
           </ul>
           <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
             <span class="icon-menu"></span>
@@ -297,39 +299,6 @@
 
 
 
-  <script>
-         $(document).ready(function() {
-              $('#violationsTable').DataTable({
-                  "ajax": {
-                      "url": "../process/fetch_violations.php",
-                      "type": "GET",
-                      "dataSrc": "data"
-                  },
-                  "columns": [
-                      { "data": "record_id" },
-                      { "data": "full_name" },
-                      { "data": "cys" },
-                      { "data": "violation_name" },
-                      { "data": "offense_count" },
-                      { 
-                          "data": "sanction_details",
-                          "render": function(data, type, row) {
-                              return data ? data : 'No sanction';
-                          }
-                      },
-                      { "data": "status" },
-                      { "data": "date_of_offense" }
-                  ]
-              });
-
-
-          });
-
-
-      </script>
-
-
-
           
       
     
@@ -353,7 +322,13 @@
     <script src="../vendors/datatables.net/jquery.dataTables.js"></script>
     <script src="../vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
     <script src="../js/dataTables.select.min.js"></script>
-
+      <!-- DataTables Buttons for Export -->
+      <script src="https://cdn.datatables.net/buttons/2.3.3/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.print.min.js"></script>
     <!-- End plugin js for this page -->
     <!-- inject:js -->
     <script src="../js/off-canvas.js"></script>
@@ -369,6 +344,78 @@
 
     <!-- End custom js for this page-->
   
+    <script>
+         $(document).ready(function() {
+              $('#violationsTable').DataTable({
+                  "ajax": {
+                      "url": "../process/fetch_violations.php",
+                      "type": "GET",
+                      "dataSrc": "data"
+                  },
+                  "columns": [
+                      { "data": "record_id" },
+                      { "data": "full_name" },
+                      { "data": "cys" },
+                      { "data": "violation_name" },
+                      { "data": "offense_count" },
+                      { 
+                          "data": "sanction_details",
+                          "render": function(data, type, row) {
+                              return data ? data : 'No sanction';
+                          }
+                      },
+                      { "data": "status" },
+                      { "data": "date_of_offense" }
+                  ],
+                  "processing": true,
+                  "searching": true,
+                  "paging": true,
+                  "ordering": true,
+                  "order": [], // Disable initial sorting
+                  dom: 'Bfrtip', // Enable buttons in the DOM
+                  buttons: [
+                      {
+                          extend: 'excelHtml5',
+                          title: 'Violations Data',
+                          exportOptions: {
+                              columns: function (idx, data, node) {
+                                  // Exclude the last column (index of last column is total columns - 1)
+                                  const isLastColumn = idx === $('#violationsTable thead th').length - 1;
+                                  return !isLastColumn;
+                              }
+                          }
+                      },
+                      {
+                          extend: 'pdfHtml5',
+                          title: 'Violations Data',
+                          exportOptions: {
+                              columns: function (idx, data, node) {
+                                  const isLastColumn = idx === $('#violationsTable thead th').length - 1;
+                                  return !isLastColumn;
+                              }
+                          }
+                      },
+                      {
+                          extend: 'print',
+                          title: 'Violations Data',
+                          exportOptions: {
+                              columns: function (idx, data, node) {
+                                  const isLastColumn = idx === $('#violationsTable thead th').length - 1;
+                                  return !isLastColumn;
+                              }
+                          }
+                      }
+                  ]
+              });
+
+
+          });
+
+
+      </script>
+
+
+
   </body>
 
   </html>

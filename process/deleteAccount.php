@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Move record to archived_accounts
         $sql = "INSERT INTO archived_accounts SELECT * FROM accounts WHERE id = ?";
         if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param('i', $id);
+            $stmt->bind_param('s', $id);
             if (!$stmt->execute()) {
                 throw new Exception('Failed to archive account.');
             }
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Delete record from accounts table
         $sql = "DELETE FROM accounts WHERE id = ?";
         if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param('i', $id);
+            $stmt->bind_param('s', $id);
             if (!$stmt->execute()) {
                 throw new Exception('Failed to delete account.');
             }

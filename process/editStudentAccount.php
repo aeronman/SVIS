@@ -13,15 +13,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $section = isset($_POST['section']) ? $_POST['section'] : '';
     $email = isset($_POST['email']) ? $_POST['email'] : '';
     $guardianname = isset($_POST['guardianName']) ? $_POST['guardianName'] : '';
-    $guardiannum = isset($_POST['guardinaContact']) ? $_POST['guardinaContact'] : '';
+    $guardiannum = isset($_POST['guardianContact']) ? $_POST['guardianContact'] : '';
 
     $fullName= $_SESSION['id'];
 
     $conn = getDbConnection();
 
     if ($accountType === 'student') {
-        $sql = "UPDATE accounts SET first_name = ?, middle_name = ?, last_name = ?, course = ? , year = ?, section = ?, email = ? , guardian_name = ? , guardian_
-        contact = ? WHERE id = ? AND account_type = 'student'";
+        $sql = "UPDATE accounts SET first_name = ?, middle_name = ?, last_name = ?, course = ? , year = ?, section = ?, email = ? , guardian_name = ? , guardian_contact = ? WHERE id = ? AND account_type = 'student'";
         
         if ($stmt = $conn->prepare($sql)) {
             $stmt->bind_param('sssssssssi', $firstName, $middleName, $lastName, $course, $year , $section, $email, $guardianname,$guardiannum, $studentId);
@@ -36,13 +35,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $logStmt->execute();
                     $logStmt->close();
                 }
+                
                 echo json_encode(['status' => 'success', 'message' => 'Student account updated successfully.']);
             } else {
+                echo "error 1";
                 echo json_encode(['status' => 'error', 'message' => 'Failed to update student account.']);
             }
 
             $stmt->close();
         } else {
+            echo "error 2";
             echo json_encode(['status' => 'error', 'message' => 'Database query failed.']);
         }
     } else {
@@ -51,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $conn->close();
 } else {
+    echo "error 3";
     echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
 }
 ?>

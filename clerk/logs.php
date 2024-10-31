@@ -29,6 +29,10 @@ $qrImage = $_SESSION['qr_image'];
   <link rel="shortcut icon" href="../images/logo2.webp" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+  <!-- Include DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.3/css/buttons.dataTables.min.css">
   <script src="ajax.js"></script>
   <style>
          .hidden {
@@ -128,7 +132,7 @@ $qrImage = $_SESSION['qr_image'];
               <img src="<?=$profilePicture?>" alt="profile"/>
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-              <a class="dropdown-item">
+              <a class="dropdown-item" href="settings.php">
                 <i class="ti-settings text-primary"></i>
                 Settings
               </a>
@@ -260,23 +264,6 @@ $qrImage = $_SESSION['qr_image'];
     </div>
 </div>
 
-<script>
-        $(document).ready(function() {
-            $('#logsTable').DataTable({
-                "ajax": {
-                    "url": "../process/fetch_student_clerk_logs.php",  // Point to the PHP file that returns logs
-                    "type": "POST",          // Use POST request to fetch data
-                    "dataSrc": "data"        // Use the "data" object from the response
-                },
-                "columns": [
-                    { "data": "action_performed" },  // Column for action performed
-                    { "data": "performed_by" },      // Column for performed by
-                    { "data": "logged_date" }        // Column for logged date
-                ]
-            });
-        });
-    </script>
-     
 
 
          
@@ -302,6 +289,13 @@ $qrImage = $_SESSION['qr_image'];
   <script src="../vendors/datatables.net/jquery.dataTables.js"></script>
   <script src="../vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
   <script src="../js/dataTables.select.min.js"></script>
+        <!-- DataTables Buttons for Export -->
+        <script src="https://cdn.datatables.net/buttons/2.3.3/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.print.min.js"></script>
 
   <!-- End plugin js for this page -->
   <!-- inject:js -->
@@ -318,6 +312,43 @@ $qrImage = $_SESSION['qr_image'];
 
   <!-- End custom js for this page-->
  
+<script>
+        $(document).ready(function() {
+            $('#logsTable').DataTable({
+                "ajax": {
+                    "url": "../process/fetch_student_clerk_logs.php",  // Point to the PHP file that returns logs
+                    "type": "POST",          // Use POST request to fetch data
+                    "dataSrc": "data"        // Use the "data" object from the response
+                },
+                "columns": [
+                    { "data": "action_performed" },  // Column for action performed
+                    { "data": "performed_by" },      // Column for performed by
+                    { "data": "logged_date" }        // Column for logged date
+                ],
+            "processing": true,
+            "searching": true,
+            "paging": true,
+            "ordering": true,
+            "order": [], // Disable initial sorting
+            dom: 'Bfrtip', // Enable buttons in the DOM
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Logs Data'
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Logs Data'
+                },
+                {
+                    extend: 'print',
+                    title: 'Logs Data'
+                }
+            ]
+            });
+        });
+    </script>
+     
 </body>
 
 </html>

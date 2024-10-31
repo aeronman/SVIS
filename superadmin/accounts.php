@@ -28,7 +28,13 @@ $qrImage = $_SESSION['qr_image'];
   <!-- endinject -->
   <link rel="shortcut icon" href="../images/logo2.webp" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- Include jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Include DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.3/css/buttons.dataTables.min.css">
+
   <script src="ajax.js"></script>
   <style>
          .hidden {
@@ -114,7 +120,7 @@ $qrImage = $_SESSION['qr_image'];
               <img src="<?=$profilePicture?>" alt="profile"/>
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-              <a class="dropdown-item">
+              <a class="dropdown-item" href="settings.php">
                 <i class="ti-settings text-primary"></i>
                 Settings
               </a>
@@ -124,11 +130,11 @@ $qrImage = $_SESSION['qr_image'];
               </a>
             </div>
           </li>
-          <li class="nav-item nav-settings d-none d-lg-flex">
+              <!-- <li class="nav-item nav-settings d-none d-lg-flex">
             <a class="nav-link" href="#">
               <i class="icon-ellipsis"></i>
             </a>
-          </li>
+          </li> -->
         </ul>
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
           <span class="icon-menu"></span>
@@ -178,6 +184,19 @@ $qrImage = $_SESSION['qr_image'];
             <a class="nav-link" href="violations.php" aria-expanded="false" aria-controls="auth">
               <i class="icon-ban menu-icon"></i>
               <span class="menu-title">Violations</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="archived_accounts.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-head menu-icon"></i>
+              <span class="menu-title">Archived Accounts</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="archived_violation.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-ban menu-icon"></i>
+              <span class="menu-title">Archived Violations</span>
             </a>
           </li>
       
@@ -310,7 +329,7 @@ $qrImage = $_SESSION['qr_image'];
                           <!-- Guardian Contact Number Field -->
                           <div class="form-group">
                               <label for="guardianContactNumber">Guardian Contact Number</label>
-                              <input type="text" class="form-control" id="guardianContactNumber" placeholder="Enter guardian contact number">
+                              <input type="tel" class="form-control" id="guardianContactNumber" placeholder="Enter guardian contact number" pattern="^09\d{9}$" maxlength="11">
                           </div>
                           <!-- Username Field -->
                           <div class="form-group">
@@ -579,9 +598,11 @@ $qrImage = $_SESSION['qr_image'];
               <label for="accountTypeFilter">Filter by Account Type</label>
               <select class="form-control" id="accountTypeFilter">
                   <option value="student" selected>Student</option>
+                  <option value="superadmin">Superadmin</option>
                   <option value="admin">Admin</option>
                   <option value="clerk">Clerk</option>
                   <option value="faculty">Faculty</option>
+                  
               </select>
           </div>
 
@@ -602,64 +623,7 @@ $qrImage = $_SESSION['qr_image'];
     </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
 
-    const accountTypeFilter = document.getElementById('accountTypeFilter');
-
-    // Function to fetch and display accounts based on the selected account type
-    function fetchAccounts(accountType) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '../process/fetchAccounts.php', true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                var response = JSON.parse(xhr.responseText);
-
-                // Destroy existing DataTable before updating data
-                if ($.fn.DataTable.isDataTable('#accountsTable')) {
-                    $('#accountsTable').DataTable().clear().destroy();
-                }
-
-                // Insert headers and rows into the table
-                document.querySelector('#accountsTable thead #tableHeaders').innerHTML = response.headers;
-                document.querySelector('#accountsTable tbody').innerHTML = response.rows;
-
-                // Re-initialize DataTable with updated data
-                $('#accountsTable').DataTable({
-                    "processing": true,
-                    "searching": true,
-                    "paging": true,
-                    "ordering": true,
-                    "order": [] // Disable initial sorting to avoid sorting errors
-                });
-            }
-        };
-        xhr.send('accountType=' + encodeURIComponent(accountType));
-    }
-
-    // Preload student accounts on page load
-    if (accountTypeFilter.value == "student") {
-        fetchAccounts('student'); // Fetch and load student accounts
-    }
-
-    // Event listener for dropdown change to fetch selected account type
-    accountTypeFilter.addEventListener('change', function () {
-        fetchAccounts(this.value);
-    });
-});
-
-
-
-function confirmDelete(id) {
-    // Set the id in the hidden input field in the delete form
-    document.getElementById('deleteId').value = id;
-    
-    // Show the delete confirmation modal
-    var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-    deleteModal.show();
-} 
-</script>
 
 
          
@@ -677,6 +641,10 @@ function confirmDelete(id) {
   </div>
   <!-- container-scroller -->
 
+   <!-- Include Bootstrap JS -->
+   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+
   <!-- plugins:js -->
   <script src="../vendors/js/vendor.bundle.base.js"></script>
   <!-- endinject -->
@@ -685,6 +653,13 @@ function confirmDelete(id) {
   <script src="../vendors/datatables.net/jquery.dataTables.js"></script>
   <script src="../vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
   <script src="../js/dataTables.select.min.js"></script>
+      <!-- DataTables Buttons for Export -->
+      <script src="https://cdn.datatables.net/buttons/2.3.3/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.print.min.js"></script>
 
   <!-- End plugin js for this page -->
   <!-- inject:js -->
@@ -698,6 +673,100 @@ function confirmDelete(id) {
   <!-- Custom js for this page-->
   <script src="../js/dashboard.js"></script>
   <script src="../js/Chart.roundedBarCharts.js"></script>
+
+
+  <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const accountTypeFilter = document.getElementById('accountTypeFilter');
+
+            function fetchAccounts(accountType) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '../process/fetchAccounts.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+
+            // Destroy existing DataTable before updating data
+            if ($.fn.DataTable.isDataTable('#accountsTable')) {
+                $('#accountsTable').DataTable().clear().destroy();
+            }
+
+            // Insert headers and rows into the table
+            document.querySelector('#accountsTable thead #tableHeaders').innerHTML = response.headers;
+            document.querySelector('#accountsTable tbody').innerHTML = response.rows;
+
+            $('#accountsTable').DataTable({
+                "processing": true,
+                "searching": true,
+                "paging": true,
+                "ordering": true,
+                "order": [], // Disable initial sorting
+                dom: 'Bfrtip', // Enable buttons in the DOM
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Accounts Data',
+                        exportOptions: {
+                            columns: function (idx, data, node) {
+                                // Exclude columns with images and the last column
+                                const isImageColumn = $('img', node).length > 0;
+                                const isLastColumn = idx === $('#accountsTable thead th').length - 1;
+                                return !isImageColumn && !isLastColumn;
+                            }
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Accounts Data',
+                        exportOptions: {
+                            columns: function (idx, data, node) {
+                                // Exclude columns with images and the last column
+                                const isImageColumn = $('img', node).length > 0;
+                                const isLastColumn = idx === $('#accountsTable thead th').length - 1;
+                                return !isImageColumn && !isLastColumn;
+                            }
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Accounts Data',
+                        exportOptions: {
+                            columns: function (idx, data, node) {
+                                // Exclude columns with images and the last column
+                                const isImageColumn = $('img', node).length > 0;
+                                const isLastColumn = idx === $('#accountsTable thead th').length - 1;
+                                return !isImageColumn && !isLastColumn;
+                            }
+                        }
+                    }
+                ]
+            });
+        }
+    };
+    xhr.send('accountType=' + encodeURIComponent(accountType));
+}
+            // Preload student accounts on page load
+            if (accountTypeFilter.value == "student") {
+                fetchAccounts('student'); // Fetch and load student accounts
+            }
+
+            // Event listener for dropdown change to fetch selected account type
+            accountTypeFilter.addEventListener('change', function () {
+                fetchAccounts(this.value);
+            });
+        });
+
+        function confirmDelete(id) {
+    // Treat the ID as a string and set it in the hidden input field in the delete form
+    document.getElementById('deleteId').value = String(id);
+    
+    // Show the delete confirmation modal
+    var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+}
+
+    </script>
 
   <!-- End custom js for this page-->
   <script>

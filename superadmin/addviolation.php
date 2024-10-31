@@ -68,8 +68,8 @@ $qrImage = $_SESSION['qr_image'];
             </div>
           </li>
         </ul>
-        <!-- <ul class="navbar-nav navbar-nav-right">
-          <li class="nav-item dropdown">
+        <ul class="navbar-nav navbar-nav-right">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
               <i class="icon-bell mx-0"></i>
               <span class="count"></span>
@@ -116,13 +116,13 @@ $qrImage = $_SESSION['qr_image'];
                 </div>
               </a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
               <img src="<?=$profilePicture?>" alt="profile"/>
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-              <a class="dropdown-item">
+              <a class="dropdown-item" href="settings.php">
                 <i class="ti-settings text-primary"></i>
                 Settings
               </a>
@@ -132,12 +132,12 @@ $qrImage = $_SESSION['qr_image'];
               </a>
             </div>
           </li>
-          <li class="nav-item nav-settings d-none d-lg-flex">
+               <!-- <li class="nav-item nav-settings d-none d-lg-flex">
             <a class="nav-link" href="#">
               <i class="icon-ellipsis"></i>
             </a>
-          </li>
-        </ul> -->
+          </li> -->
+        </ul>
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
           <span class="icon-menu"></span>
         </button>
@@ -187,6 +187,19 @@ $qrImage = $_SESSION['qr_image'];
             <a class="nav-link" href="violations.php" aria-expanded="false" aria-controls="auth">
               <i class="icon-ban menu-icon"></i>
               <span class="menu-title">Violations</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="archived_accounts.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-head menu-icon"></i>
+              <span class="menu-title">Archived Accounts</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="archived_violation.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-ban menu-icon"></i>
+              <span class="menu-title">Archived Violations</span>
             </a>
           </li>
       

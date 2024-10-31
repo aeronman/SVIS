@@ -1,5 +1,6 @@
 <?php
-include('../process/checkSuperAdminSession.php');
+include('../process/checkAdminSession.php');
+
 $id = $_SESSION['id'];
 $fullName = $_SESSION['full_name'];
 $profilePicture = $_SESSION['profile_picture'];
@@ -12,7 +13,7 @@ $qrImage = $_SESSION['qr_image'];
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Logs</title>
+  <title>Dashboard</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="../vendors/feather/feather.css">
   <link rel="stylesheet" href="../vendors/ti-icons/css/themify-icons.css">
@@ -27,33 +28,9 @@ $qrImage = $_SESSION['qr_image'];
   <link rel="stylesheet" href="../css/vertical-layout-light/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="../images/logo2.webp" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <!-- Include jQuery -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-  <!-- Include DataTables CSS -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.3/css/buttons.dataTables.min.css">
-  <script src="ajax.js"></script>
-  <style>
-         .hidden {
-            display: none;
-        }
-   
-        th, td {
-            padding: 15px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-            height: 12px; /* Adjust header row height */
-        }
-        tr {
-            height: 50px; /* Adjust row height */
-        }
-    
-    </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
   <div class="container-scroller">
@@ -65,7 +42,7 @@ $qrImage = $_SESSION['qr_image'];
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-          <span class="icon-menu"></span> 
+          <span class="icon-menu"></span>
         </button>
         <ul class="navbar-nav mr-lg-2">
           <li class="nav-item nav-search d-none d-lg-block">
@@ -137,7 +114,7 @@ $qrImage = $_SESSION['qr_image'];
                 <i class="ti-settings text-primary"></i>
                 Settings
               </a>
-              <a href="../process/logout.php" class="dropdown-item">
+              <a href="../process/logout.php"class="dropdown-item">
                 <i class="ti-power-off text-primary"></i>
                 Logout
               </a>
@@ -212,7 +189,7 @@ $qrImage = $_SESSION['qr_image'];
             </a>
           </li>
       
-          <li class="nav-item active">
+          <li class="nav-item">
             <a class="nav-link" href="logs.php">
               <i class="icon-paper menu-icon"></i>
               <span class="menu-title">Logs</span>
@@ -248,74 +225,94 @@ $qrImage = $_SESSION['qr_image'];
               </div>
             </div>
           </div>
-          <div id="alertContainer"></div>
-         
-
-  
-          <!-- Delete Confirmation Modal -->
-      <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
-              <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body">
-              Are you sure you want to delete this record?
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-              <form id="deleteForm" method="POST" action="">
-                <input type="hidden" name="id" id="deleteId" value="">
-                <button type="submit" class="btn btn-danger">Delete</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-
-    <div class="col-lg-12 grid-margin stretch-card">
-    <div class="card">
-        <div class="card-body">
-    
-            <h2>Logs</h2>
-            <table id="logsTable" class="display" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Action Performed</th>
-                        <th>Performed By</th>
-                        <th>Date Logged</th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be loaded here by DataTables -->
-                </tbody>
-            </table>
-        
-        </div>
-    </div>
-</div>
+          <div class="row">
+                <div class="col-md-12 grid-margin">
+                    <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Edit Profile</h4>
+                        <form id="profile-form" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="profile_picture">Profile Picture</label><br>
+                            <img id="preview" src="<?=$profilePicture?>" alt="Profile Picture" style="width: 100px; height: auto; border: 1px solid #ccc; margin-bottom: 10px;"/><br>
+                            <input type="file" name="profile_picture" accept="image/*" onchange="previewImage(event)" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_password">New Password</label>
+                            <input type="password" class="form-control" name="new_password" id="new_password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm Password</label>
+                            <input type="password" class="form-control" name="confirm_password" id="confirm_password" required>
+                            <small id="passwordHelp" class="form-text text-muted">Passwords must match.</small>
+                            <div id="password-error" style="color: red; display: none;"></div> <!-- Error message for password validation -->
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                    </div>
+                </div>
+                </div>
 
 
-
-
-         
-    
-   
-       
-        <!-- content-wrapper ends -->
-        <!-- partial:partials/_footer.html -->
-    
-        <!-- partial -->
-      </div>
       <!-- main-panel ends -->
     </div>
     <!-- page-body-wrapper ends -->
   </div>
-  <!-- container-scroller -->
+  <script>
+function previewImage(event) {
+  const reader = new FileReader();
+  reader.onload = function(){
+    const preview = document.getElementById('preview');
+    preview.src = reader.result;
+  }
+  reader.readAsDataURL(event.target.files[0]);
+}
+
+// Form submission via AJAX
+$(document).ready(function() {
+  $('#profile-form').on('submit', function(e) {
+    e.preventDefault(); // Prevent default form submission
+
+    // Reset error message
+    $('#password-error').text('').hide();
+
+    const newPassword = $('#new_password').val();
+    const confirmPassword = $('#confirm_password').val();
+
+    // Validate passwords
+    if (newPassword !== confirmPassword) {
+      $('#password-error').text('Passwords do not match.').show();
+      return; // Stop the form submission
+    } else if (newPassword.length < 8) { // Minimum length
+      $('#password-error').text('Password must be at least 8 characters long.').show();
+      return; // Stop the form submission
+    }
+
+    // Prepare form data
+    const formData = new FormData(this);
+
+    // AJAX request
+    $.ajax({
+      url: '../process/update_profile.php',
+      type: 'POST',
+      data: formData,
+      contentType: false,
+      processData: false,
+      success: function(response) {
+        // Handle response (You may need to customize this based on your response structure)
+        alert('Profile updated successfully!'); // Success message
+        // Optionally, redirect or refresh the page
+        // location.reload();
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        // Handle errors
+        alert('An error occurred: ' + errorThrown);
+      }
+    });
+  });
+});
+</script>
+
 
   <!-- plugins:js -->
   <script src="../vendors/js/vendor.bundle.base.js"></script>
@@ -325,15 +322,6 @@ $qrImage = $_SESSION['qr_image'];
   <script src="../vendors/datatables.net/jquery.dataTables.js"></script>
   <script src="../vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
   <script src="../js/dataTables.select.min.js"></script>
-      
-      <!-- DataTables Buttons for Export -->
-      <script src="https://cdn.datatables.net/buttons/2.3.3/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.print.min.js"></script>
-
 
   <!-- End plugin js for this page -->
   <!-- inject:js -->
@@ -342,51 +330,11 @@ $qrImage = $_SESSION['qr_image'];
   <script src="../js/template.js"></script>
   <script src="../js/settings.js"></script>
   <script src="../js/todolist.js"></script>
-  
   <!-- endinject -->
   <!-- Custom js for this page-->
   <script src="../js/dashboard.js"></script>
   <script src="../js/Chart.roundedBarCharts.js"></script>
-
   <!-- End custom js for this page-->
-  <script>
-    $(document).ready(function() {
-        $('#logsTable').DataTable({
-            "ajax": {
-                "url": "../process/fetch_logs.php",  // Point to the PHP file that returns logs
-                "type": "POST",          // Use POST request to fetch data
-                "dataSrc": "data"        // Use the "data" object from the response
-            },
-            "columns": [
-                { "data": "action_performed" },  // Column for action performed
-                { "data": "performed_by" },      // Column for performed by
-                { "data": "logged_date" }        // Column for logged date
-            ],
-            "processing": true,
-            "searching": true,
-            "paging": true,
-            "ordering": true,
-            "order": [], // Disable initial sorting
-            dom: 'Bfrtip', // Enable buttons in the DOM
-            buttons: [
-                {
-                    extend: 'excelHtml5',
-                    title: 'Logs Data'
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Logs Data'
-                },
-                {
-                    extend: 'print',
-                    title: 'Logs Data'
-                }
-            ]
-        });
-    });
-</script>
-
- 
 </body>
 
 </html>

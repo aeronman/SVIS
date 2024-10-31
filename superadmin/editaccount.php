@@ -11,7 +11,7 @@ $accountid = $_GET['id'];
 
 $conn = getDbConnection();
 
-$sql = "SELECT * FROM accounts where id = $accountid";
+$sql = "SELECT * FROM accounts where id = '$accountid'";
 
 if($stmt = $conn->prepare($sql)){
     $stmt->execute();
@@ -144,7 +144,7 @@ if($stmt = $conn->prepare($sql)){
               <img src="<?=$profilePicture?>" alt="profile"/>
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-              <a class="dropdown-item">
+              <a class="dropdown-item" href="settings.php">
                 <i class="ti-settings text-primary"></i>
                 Settings
               </a>
@@ -154,11 +154,11 @@ if($stmt = $conn->prepare($sql)){
               </a>
             </div>
           </li>
-          <li class="nav-item nav-settings d-none d-lg-flex">
+               <!-- <li class="nav-item nav-settings d-none d-lg-flex">
             <a class="nav-link" href="#">
               <i class="icon-ellipsis"></i>
             </a>
-          </li>
+          </li> -->
         </ul>
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
           <span class="icon-menu"></span>
@@ -211,6 +211,18 @@ if($stmt = $conn->prepare($sql)){
             </a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="archived_accounts.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-head menu-icon"></i>
+              <span class="menu-title">Archived Accounts</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="archived_violation.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-ban menu-icon"></i>
+              <span class="menu-title">Archived Violations</span>
+            </a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="logs.php">
               <i class="icon-paper menu-icon"></i>
               <span class="menu-title">Logs</span>
@@ -243,8 +255,7 @@ if($stmt = $conn->prepare($sql)){
               </div>
             </div>
           </div>
-          <div id="alertContainer"></div>
-
+          
           <form id="dynamicForm">
                         <div class="form-group">
                             <label for="accountType">Account Type</label>
@@ -458,7 +469,8 @@ if($stmt = $conn->prepare($sql)){
                         <button type="submit" class="btn btn-primary" id="submitEditAccountForm">Edit Account</button>
           </form>
 
-    
+          <div id="alertContainer"></div>
+
 
 
     

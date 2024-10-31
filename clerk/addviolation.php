@@ -122,7 +122,7 @@ $qrImage = $_SESSION['qr_image'];
               <img src="<?=$profilePicture?>" alt="profile"/>
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-              <a class="dropdown-item">
+              <a class="dropdown-item" href="settings.php">
                 <i class="ti-settings text-primary"></i>
                 Settings
               </a>
@@ -132,11 +132,11 @@ $qrImage = $_SESSION['qr_image'];
               </a>
             </div>
           </li>
-          <li class="nav-item nav-settings d-none d-lg-flex">
+               <!-- <li class="nav-item nav-settings d-none d-lg-flex">
             <a class="nav-link" href="#">
               <i class="icon-ellipsis"></i>
             </a>
-          </li>
+          </li> -->
         </ul>
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
           <span class="icon-menu"></span>

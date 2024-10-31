@@ -76,6 +76,7 @@ $(document).ready(function () {
 
         // Function to validate guardian contact number
         function isValidGuardianContact(contact) {
+            
             // Check if the contact is 11 digits and starts with '09'
             var regex = /^09\d{9}$/;
             return regex.test(contact);
@@ -86,7 +87,7 @@ $(document).ready(function () {
             ajaxUrl = '../process/createStudentAccount.php';
             var profilePictureFile = $('#studentProfilePicture')[0].files[0];
             var studentId = $('#studentId').val();
-            var guardianContact = $('#guardianContact').val(); // Get guardian contact number
+            var guardianContact = $('#guardianContactNumber').val(); // Get guardian contact number
             var email = $('#studentEmail').val();
 
             // Check if Student ID exists
@@ -107,7 +108,9 @@ $(document).ready(function () {
                 // Validate guardian contact number
                 if (!isValidGuardianContact(guardianContact)) {
                     showModalAlert('Guardian contact number must be 11 digits long and start with 09.', 'danger');
+                    console.log(guardianContact);
                     return;
+                   
                 }
         
                 // Proceed with QR Code generation and form submission
@@ -317,37 +320,48 @@ $(document).ready(function () {
         });
         }
         
-        // Function to handle form submission
-        function submitForm(ajaxUrl, formData, previewElement, qrcodeContainer) {
-            $.ajax({
-                url: ajaxUrl,
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    closeModal(); // Close the modal before showing the alert
-                    var jsonResponse = JSON.parse(response);
-                    if (jsonResponse.success) {
-                        showAlert(jsonResponse.success, 'success');
-                    } else if (jsonResponse.error) {
-                        showAlert(jsonResponse.error, 'danger');
+                // Function to handle form submission
+            function submitForm(ajaxUrl, formData, previewElement, qrcodeContainer) {
+                $.ajax({
+                    url: ajaxUrl,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        closeModal(); // Close the modal before showing the alert
+                        var jsonResponse = JSON.parse(response);
+                        if (jsonResponse.success) {
+                            showAlert(jsonResponse.success, 'success');
+
+                            // Set a 3-second delay, then reload the page
+                            setTimeout(function () {
+                                location.reload();
+                            }, 3000); // 3000 milliseconds = 3 seconds
+                        } else if (jsonResponse.error) {
+                            showAlert(jsonResponse.error, 'danger');
+                        }
+                        
+                        $('#dynamicForm')[0].reset(); // Reset the form fields
+                        
+                        // Reset preview image if available
+                        if (previewElement) {
+                            previewElement.src = '';
+                            previewElement.style.display = 'none';
+                        }
+                        
+                        // Remove QR code container if available
+                        if (qrcodeContainer) {
+                            document.body.removeChild(qrcodeContainer);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        closeModal(); // Close the modal before showing the alert
+                        showAlert('An error occurred: ' + xhr.responseText, 'danger');
                     }
-                    $('#dynamicForm')[0].reset();
-                    if (previewElement) {
-                        previewElement.src = '';
-                        previewElement.style.display = 'none';
-                    }
-                    if (qrcodeContainer) {
-                        document.body.removeChild(qrcodeContainer);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    closeModal(); // Close the modal before showing the alert
-                    showAlert('An error occurred: ' + xhr.responseText, 'danger');
-                }
-            });
-        }
+                });
+            }
+
         
     });
     
@@ -475,17 +489,17 @@ $(document).ready(function () {
         }
     
         // Check if the email already exists before proceeding
-        checkEmailExists(email, function(exists) {
-            if (exists) {
-                $('#alertContainer').html(`
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        This email is already in use. Please use a different email.
-                        <button type="button" class="btn-close border-0 bg-transparent position-absolute top-0 end-0" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                `);
-            } else {
+        // checkEmailExists(email, function(exists) {
+        //     if (exists) {
+        //         $('#alertContainer').html(`
+        //             <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        //                 This email is already in use. Please use a different email.
+        //                 <button type="button" class="btn-close border-0 bg-transparent position-absolute top-0 end-0" data-dismiss="alert" aria-label="Close">
+        //                     <span aria-hidden="true">&times;</span>
+        //                 </button>
+        //             </div>
+        //         `);
+        //     } else {
                 // Submit the form data via AJAX if email does not exist
                 $.ajax({
                     url: ajaxUrl,
@@ -496,8 +510,8 @@ $(document).ready(function () {
                     success: handleAjaxResponse,
                     error: handleAjaxError
                 });
-            }
-        });
+        //     }
+        // });
     });
     
     $('#deleteForm').on('submit', function(e) {

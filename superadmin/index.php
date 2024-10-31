@@ -28,7 +28,9 @@ $qrImage = $_SESSION['qr_image'];
   <link rel="stylesheet" href="../css/vertical-layout-light/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="../images/logo2.webp" />
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
   <div class="container-scroller">
@@ -108,7 +110,7 @@ $qrImage = $_SESSION['qr_image'];
               <img src="<?=$profilePicture?>" alt="profile"/>
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-              <a class="dropdown-item">
+              <a class="dropdown-item" href="settings.php">
                 <i class="ti-settings text-primary"></i>
                 Settings
               </a>
@@ -118,11 +120,11 @@ $qrImage = $_SESSION['qr_image'];
               </a>
             </div>
           </li>
-          <li class="nav-item nav-settings d-none d-lg-flex">
+              <!-- <li class="nav-item nav-settings d-none d-lg-flex">
             <a class="nav-link" href="#">
               <i class="icon-ellipsis"></i>
             </a>
-          </li>
+          </li> -->
         </ul>
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
           <span class="icon-menu"></span>
@@ -174,6 +176,18 @@ $qrImage = $_SESSION['qr_image'];
               <span class="menu-title">Violations</span>
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="archived_accounts.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-head menu-icon"></i>
+              <span class="menu-title">Archived Accounts</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="archived_violation.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-ban menu-icon"></i>
+              <span class="menu-title">Archived Violations</span>
+            </a>
+          </li>
       
           <li class="nav-item">
             <a class="nav-link" href="logs.php">
@@ -212,89 +226,354 @@ $qrImage = $_SESSION['qr_image'];
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6 grid-margin stretch-card">
-              <div class="card tale-bg">
-                <div class="card-people mt-auto">
-                  <img src="../images/dashboard/people.svg" alt="people">
-                  <div class="weather-info">
-                    <div class="d-flex">
-                      <div>
-                        <h2 class="mb-0 font-weight-normal"><i class="icon-sun mr-2"></i>31<sup>C</sup></h2>
-                      </div>
-                      <div class="ml-2">
-                        <h4 class="location font-weight-normal">Manila</h4>
-                        <h6 class="font-weight-normal">PH</h6>
-                      </div>
-                    </div>
+
+
+        
+                      <!-- Top Violation Tile (Clickable) -->
+            <div class="col-md-6 mb-4 stretch-card transparent">
+              <div class="card card-tale" id="topViolationTile" onclick="showTopViolationModal()">
+                <div class="card-body">
+                  <p class="mb-4">Top Violation</p>
+                  <p id="violationType" class="fs-30 mb-2">Loading...</p>
+                  <p id="violationCount">Count: 0</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Total Number of Students (Link to accounts.php) -->
+            <div class="col-md-6 mb-4 stretch-card transparent">
+              <div class="card card-dark-blue">
+                <div class="card-body">
+                  <a href="accounts.php" class="text-white">
+                    <p class="mb-4">Total Number of Students</p>
+                    <p id="totalStudents" class="fs-30 mb-2">Loading...</p>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Violations Today (Clickable) -->
+            <div class="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
+              <div class="card card-light-blue" id="violationsTodayTile" onclick="showTodayViolationsModal()">
+                <div class="card-body">
+                  <p class="mb-4">Number of Violation (Today)</p>
+                  <p id="violationsToday" class="fs-30 mb-2">Loading...</p>
+                  <p id="violationPercentage">(0.00%)</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Violations This Month (Clickable) -->
+            <div class="col-md-6 stretch-card transparent">
+              <div class="card card-light-danger" id="violationsMonthTile" onclick="showMonthViolationsModal()">
+                <div class="card-body">
+                  <p class="mb-4">Number of Violations (This Month)</p>
+                  <p id="violationsThisMonth" class="fs-30 mb-2">Loading...</p>
+                </div>
+              </div>
+            </div>
+
+
+                        <!-- Top Violation Modal -->
+            <div id="topViolationModal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Top Violation Details</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  </div>
+                  <div class="modal-body">
+                    <table id="topViolationTable" class="table table-striped">
+                      <!-- Table Head -->
+                      <thead>
+                        <tr>
+                          <th>Violation Name</th>
+                          <th>Count</th>
+                        </tr>
+                      </thead>
+                      <!-- Table Body to be populated dynamically -->
+                      <tbody></tbody>
+                    </table>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col-md-6 grid-margin transparent">
-              <div class="row">
-                <div class="col-md-6 mb-4 stretch-card transparent">
-                  <div class="card card-tale">
-                    <div class="card-body">
-                        <p class="mb-4">Top Violation</p>
-                        <p id="violationType" class="fs-30 mb-2">Loading...</p>
-                        <p id="violationCount">Count: 0 (30 days)</p>
-                    </div>
+
+            <!-- Today Violations Modal -->
+            <div id="todayViolationsModal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Today's Violations</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                   </div>
-                </div>
-                <div class="col-md-6 mb-4 stretch-card transparent">
-                  <div class="card card-dark-blue">
-                    <div class="card-body">
-                        <p class="mb-4">Total Number of Students</p>
-                        <p id="totalStudents" class="fs-30 mb-2">Loading...</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
-                  <div class="card card-light-blue">
-                      <div class="card-body">
-                          <p class="mb-4">Number of Violation (Today)</p>
-                          <p id="violationsToday" class="fs-30 mb-2">Loading...</p>
-                          <p id="violationPercentage">(0.00%)</p>
-                      </div>
-                  </div>
-                </div>
-                <div class="col-md-6 stretch-card transparent">
-                  <div class="card card-light-danger">
-                    <div class="card-body">
-                        <p class="mb-4">Number of Violations (This Month)</p>
-                        <p id="violationsThisMonth" class="fs-30 mb-2">Loading...</p>
-                    </div>
+                  <div class="modal-body">
+                    <table id="todayViolationsTable" class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Violation Name</th>
+                          <th>Count</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="card-title">Violation Details</p>
-                        <p class="font-weight-500">Violation counts by month and violation type for the current year.</p>
-                        <canvas id="violation-chart"></canvas> <!-- Line chart element -->
-                    </div>
+
+            <!-- Month Violations Modal -->
+            <div id="monthViolationsModal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">This Month's Violations</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  </div>
+                  <div class="modal-body">
+                    <table id="monthViolationsTable" class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Violation Name</th>
+                          <th>Count</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
                 </div>
+              </div>
             </div>
-          </div>
-        </div>
+
+
         <!-- content-wrapper ends -->
         <!-- partial:partials/_footer.html -->
        
         <!-- partial -->
       </div>
+      <div class="row mt-4">
+        <h4 class="centered">Visualize CICT Students Violation Through Graphs</h4>
+                    <!-- Filters -->
+<div class="col-12">
+    <label for="monthFilter">Month:</label>
+    <select id="monthFilter">
+        <option value="">All</option>
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+    </select>
+
+    <label for="yearFilter">Year:</label>
+    <input type="number" id="yearFilter" placeholder="YYYY">
+
+    <label for="studentYearFilter">Student Year:</label>
+    <select id="studentYearFilter">
+        <option value="">All</option>
+        <option value="1">1st Year</option>
+        <option value="2">2nd Year</option>
+        <option value="3">3rd Year</option>
+        <option value="4">4th Year</option>
+    </select>
+
+    <button class="btn btn-primary"id="filterButton">Generate Charts</button>
+</div>
+
+      </div>
+
+      
+<!-- Chart Containers -->
+<div class="row">
+    <canvas id="barChart"></canvas>
+
+</div>
+<div class="row">
+<canvas id="pieChart"></canvas>
+</div>
+
       <!-- main-panel ends -->
     </div>
     <!-- page-body-wrapper ends -->
   </div>
   <!-- container-scroller -->
   <script>
+   function showTopViolationModal() {
+    $('#topViolationModal').modal('show');
+    $.ajax({
+        url: '../process/getTopViolations.php',
+        method: 'GET',
+        dataType: 'json', // Expect JSON response
+        success: function(data) {
+            if (data.status === 'success') {
+                let rows = '';
+                data.violations.forEach(function(violation) {
+                    rows += `<tr>
+                        <td>${violation.violation_type}</td>
+                        <td>${violation.violation_count}</td>
+                    </tr>`;
+                });
+                $('#topViolationTable tbody').html(rows); // Populate table with sorted violation data
+            } else {
+                $('#topViolationTable tbody').html('<tr><td colspan="2">' + data.message + '</td></tr>');
+            }
+        },
+        error: function() {
+            $('#topViolationTable tbody').html('<tr><td colspan="2">Error fetching data.</td></tr>');
+        }
+    });
+}
+
+function showTodayViolationsModal() {
+    $('#todayViolationsModal').modal('show');
+    $.ajax({
+        url: '../process/getTodaysViolation.php',
+        method: 'GET',
+        dataType: 'json', // Expect JSON response
+        success: function(data) {
+            if (data.status === 'success') {
+                let rows = '';
+                data.violations.forEach(function(violation) {
+                    rows += `<tr>
+                        <td>${violation.violation_type}</td>
+                        <td>${violation.violation_count}</td>
+                    </tr>`;
+                });
+                $('#todayViolationsTable tbody').html(rows); // Populate table with today's violation data
+            } else {
+                $('#todayViolationsTable tbody').html('<tr><td colspan="2">' + data.message + '</td></tr>');
+            }
+        },
+        error: function() {
+            $('#todayViolationsTable tbody').html('<tr><td colspan="2">Error fetching data.</td></tr>');
+        }
+    });
+}
+
+function showMonthViolationsModal() {
+    $('#monthViolationsModal').modal('show');
+    $.ajax({
+        url: '../process/getMonthViolation.php',
+        method: 'GET',
+        dataType: 'json', // Expect JSON response
+        success: function(data) {
+            if (data.status === 'success') {
+                let rows = '';
+                data.violations.forEach(function(violation) {
+                    rows += `<tr>
+                        <td>${violation.violation_type}</td>
+                        <td>${violation.violation_count}</td>
+                    </tr>`;
+                });
+                $('#monthViolationsTable tbody').html(rows); // Populate table with this month’s violation data
+            } else {
+                $('#monthViolationsTable tbody').html('<tr><td colspan="2">' + data.message + '</td></tr>');
+            }
+        },
+        error: function() {
+            $('#monthViolationsTable tbody').html('<tr><td colspan="2">Error fetching data.</td></tr>');
+        }
+    });
+}
+
         $(document).ready(function() {
+
+
+          function fetchViolationsData(month, year, studentYear) {
+        $.ajax({
+            url: '../process/getViolationsData.php',
+            method: 'GET',
+            data: {
+                month: month,
+                year: year,
+                student_year: studentYear
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    renderCharts(response.data);
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function() {
+                alert('Error fetching data.');
+            }
+        });
+    }
+
+    function renderCharts(data) {
+        const labels = data.map(item => item.violation_name);
+        const counts = data.map(item => item.violation_count);
+
+        // Bar Chart
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        const barChart = new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Violation Counts',
+                    data: counts,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Pie Chart
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        const pieChart = new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Violation Percentages',
+                    data: counts,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            }
+        });
+    }
+
+    $('#filterButton').on('click', function() {
+        const month = $('#monthFilter').val();
+        const year = $('#yearFilter').val();
+        const studentYear = $('#studentYearFilter').val();
+
+        fetchViolationsData(month, year, studentYear);
+    });
             // Ajax call to fetch the top violation
             $.ajax({
                 url: '../process/top_violation.php', // PHP file to fetch data from
@@ -369,65 +648,10 @@ $qrImage = $_SESSION['qr_image'];
                     $('#violationsThisMonth').text('Error fetching data');
                 }
             });
-            $.ajax({
-                url: '../process/fetch_violation_chart.php',
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        const violationsData = response.violations;
-                        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-                        
-                        // Prepare datasets for each violation type
-                        const datasets = [];
-                        Object.keys(violationsData).forEach(violationType => {
-                            datasets.push({
-                                label: violationType,
-                                data: violationsData[violationType], // Array of counts by month
-                                borderColor: getRandomColor(),
-                                fill: false
-                            });
-                        });
+          
 
-                        // Create the chart
-                        const ctx = document.getElementById('violation-chart').getContext('2d');
-                        new Chart(ctx, {
-                            type: 'line',
-                            data: {
-                                labels: months, // X-axis labels (months)
-                                datasets: datasets
-                            },
-                            options: {
-                                responsive: true,
-                                plugins: {
-                                    legend: {
-                                        position: 'top'
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Monthly Violations by Type (This Year)'
-                                    }
-                                }
-                            }
-                        });
-                    } else {
-                        alert('Error fetching violation data');
-                    }
-                },
-                error: function() {
-                    alert('An error occurred while fetching violation data.');
-                }
-            });
+            
 
-            // Helper function to generate random colors for the lines
-            function getRandomColor() {
-                const letters = '0123456789ABCDEF';
-                let color = '#';
-                for (let i = 0; i < 6; i++) {
-                    color += letters[Math.floor(Math.random() * 16)];
-                }
-                return color;
-            }
         });
     </script>
 

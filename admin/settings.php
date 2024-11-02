@@ -189,6 +189,7 @@ $qrImage = $_SESSION['qr_image'];
             </a>
           </li>
       
+      
           <li class="nav-item">
             <a class="nav-link" href="logs.php">
               <i class="icon-paper menu-icon"></i>

@@ -198,6 +198,8 @@ $qrImage = $_SESSION['qr_image'];
               <span class="menu-title">Archived Violations</span>
             </a>
           </li>
+          
+      
       
           <li class="nav-item">
             <a class="nav-link" href="logs.php">

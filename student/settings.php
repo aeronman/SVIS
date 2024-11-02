@@ -5,6 +5,21 @@ $id = $_SESSION['id'];
 $fullName = $_SESSION['full_name'];
 $profilePicture = $_SESSION['profile_picture'];
 $qrImage = $_SESSION['qr_image'];
+
+  // Fetch student details from the database
+  include('../process/db_connection.php'); // Include database connection
+   // Database connection
+ $conn = getDbConnection();
+
+  $query = "SELECT first_name, middle_name, last_name, course, year, section, guardian_name, guardian_contact FROM accounts WHERE id = ?";
+  $stmt = $conn->prepare($query);
+  $stmt->bind_param("i", $id);
+  $stmt->execute();
+  $stmt->bind_result($firstName, $middleName, $lastName, $course, $year, $section, $guardianName, $guardianContact);
+  $stmt->fetch();
+  $stmt->close();
+  $conn->close();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -213,6 +228,39 @@ $qrImage = $_SESSION['qr_image'];
                     <div class="card-body">
                         <h4 class="card-title">Edit Profile</h4>
                         <form id="profile-form" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+    <label for="first_name">First Name</label>
+    <input type="text" class="form-control" id="first_name" value="<?= $firstName ?>" readonly>
+</div>
+<div class="form-group">
+    <label for="middle_name">Middle Name</label>
+    <input type="text" class="form-control" id="middle_name" value="<?= $middleName ?>" readonly>
+</div>
+<div class="form-group">
+    <label for="last_name">Last Name</label>
+    <input type="text" class="form-control" id="last_name" value="<?= $lastName ?>" readonly>
+</div>
+<div class="form-group">
+    <label for="course">Course</label>
+    <input type="text" class="form-control" id="course" value="<?= $course ?>" readonly>
+</div>
+<div class="form-group">
+    <label for="year_section">Year</label>
+    <input type="text" class="form-control" id="year" value="<?= $year?>" readonly>
+</div>
+<div class="form-group">
+    <label for="year_section">Section</label>
+    <input type="text" class="form-control" id="section" value="<?= $section?>" readonly>
+</div>
+<div class="form-group">
+    <label for="guardian_name">Guardian Name</label>
+    <input type="text" class="form-control" id="guardian_name" value="<?= $guardianName ?>" readonly>
+</div>
+<div class="form-group">
+    <label for="guardian_contact">Guardian Contact Number</label>
+    <input type="text" class="form-control" id="guardian_contact" value="<?= $guardianContact ?>" readonly>
+</div>
+
                         <div class="form-group">
                             <label for="profile_picture">Profile Picture</label><br>
                             <img id="preview" src="<?=$profilePicture?>" alt="Profile Picture" style="width: 100px; height: auto; border: 1px solid #ccc; margin-bottom: 10px;"/><br>

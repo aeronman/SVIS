@@ -4,6 +4,9 @@
   $fullName = $_SESSION['full_name'];
   $profilePicture = $_SESSION['profile_picture'];
   $qrImage = $_SESSION['qr_image'];
+
+
+
   ?>
   <!DOCTYPE html>
   <html lang="en">
@@ -211,6 +214,8 @@
               <span class="menu-title">Archived Violations</span>
             </a>
           </li>
+        
+       
             <li class="nav-item">
               <a class="nav-link" href="logs.php">
                 <i class="icon-paper menu-icon"></i>

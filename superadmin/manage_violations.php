@@ -7,19 +7,6 @@ $id = $_SESSION['id'];
 $fullName = $_SESSION['full_name'];
 $profilePicture = $_SESSION['profile_picture'];
 $qrImage = $_SESSION['qr_image'];
-  // Fetch student details from the database
-  include('../process/db_connection.php'); // Include database connection
-   // Database connection
- $conn = getDbConnection();
-
-  $query = "SELECT first_name, middle_name, last_name, course, year, section, guardian_name, guardian_contact FROM accounts WHERE id = ?";
-  $stmt = $conn->prepare($query);
-  $stmt->bind_param("i", $id);
-  $stmt->execute();
-  $stmt->bind_result($firstName, $middleName, $lastName, $course, $year, $section, $guardianName, $guardianContact);
-  $stmt->fetch();
-  $stmt->close();
-  $conn->close();
 
 ?>
 <!DOCTYPE html>

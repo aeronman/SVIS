@@ -279,13 +279,16 @@ $(document).ready(function() {
     const newPassword = $('#new_password').val();
     const confirmPassword = $('#confirm_password').val();
 
-    // Validate passwords
-    if (newPassword !== confirmPassword) {
-      $('#password-error').text('Passwords do not match.').show();
-      return; // Stop the form submission
-    } else if (newPassword.length < 8) { // Minimum length
-      $('#password-error').text('Password must be at least 8 characters long.').show();
-      return; // Stop the form submission
+    // Check if password fields are not empty before validating
+    if (newPassword || confirmPassword) {
+        // Validate passwords
+        if (newPassword !== confirmPassword) {
+            $('#password-error').text('Passwords do not match.').show();
+            return; // Stop the form submission
+        } else if (newPassword.length < 8) { // Minimum length
+            $('#password-error').text('Password must be at least 8 characters long.').show();
+            return; // Stop the form submission
+        }
     }
 
     // Prepare form data
@@ -293,23 +296,24 @@ $(document).ready(function() {
 
     // AJAX request
     $.ajax({
-      url: '../process/update_profile.php',
-      type: 'POST',
-      data: formData,
-      contentType: false,
-      processData: false,
-      success: function(response) {
-        // Handle response (You may need to customize this based on your response structure)
-        alert('Profile updated successfully!'); // Success message
-        // Optionally, redirect or refresh the page
-        // location.reload();
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        // Handle errors
-        alert('An error occurred: ' + errorThrown);
-      }
+        url: '../process/update_profile.php',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            // Handle response (You may need to customize this based on your response structure)
+            alert('Profile updated successfully!'); // Success message
+            // Optionally, redirect or refresh the page
+            // location.reload();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            // Handle errors
+            alert('An error occurred: ' + errorThrown);
+        }
     });
-  });
+});
+
 });
 </script>
 

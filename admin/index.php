@@ -193,13 +193,7 @@ $qrImage = $_SESSION['qr_image'];
           </li>
          
           
-          <li class="nav-item">
-            <a class="nav-link" href="manage_violations.php" aria-expanded="false" aria-controls="auth">
-              <i class="icon-ban menu-icon"></i>
-              <span class="menu-title">Manage Violations</span>
-            </a>
-          </li>
-      
+    
           <li class="nav-item">
             <a class="nav-link" href="logs.php">
               <i class="icon-paper menu-icon"></i>
@@ -416,7 +410,6 @@ $qrImage = $_SESSION['qr_image'];
   </div>
   <!-- container-scroller -->
   <script>
-   function showTopViolationModal() {
     function showTopViolationModal() {
     $('#topViolationModal').modal('show');
     $.ajax({

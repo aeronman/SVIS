@@ -569,17 +569,17 @@ $qrImage = $_SESSION['qr_image'];
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+              <h5 class="modal-title" id="deleteModalLabel">Confirm Archive</h5>
               <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
-              Are you sure you want to delete this record?
+              Are you sure you want to archive this record?
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
               <form id="deleteForm" method="POST" action="">
                 <input type="hidden" name="id" id="deleteId" value="">
-                <button type="submit" class="btn btn-danger">Delete</button>
+                <button type="submit" class="btn btn-danger">Archive</button>
               </form>
             </div>
           </div>

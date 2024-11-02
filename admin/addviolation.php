@@ -68,8 +68,8 @@ $qrImage = $_SESSION['qr_image'];
             </div>
           </li>
         </ul>
-        <!-- <ul class="navbar-nav navbar-nav-right">
-          <li class="nav-item dropdown">
+        <ul class="navbar-nav navbar-nav-right">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
               <i class="icon-bell mx-0"></i>
               <span class="count"></span>
@@ -116,7 +116,7 @@ $qrImage = $_SESSION['qr_image'];
                 </div>
               </a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
               <img src="<?=$profilePicture?>" alt="profile"/>
@@ -137,7 +137,7 @@ $qrImage = $_SESSION['qr_image'];
               <i class="icon-ellipsis"></i>
             </a>
           </li> -->
-        </ul> -->
+        </ul>
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
           <span class="icon-menu"></span>
         </button>
@@ -187,6 +187,19 @@ $qrImage = $_SESSION['qr_image'];
             <a class="nav-link" href="violations.php" aria-expanded="false" aria-controls="auth">
               <i class="icon-ban menu-icon"></i>
               <span class="menu-title">Violations</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="archived_accounts.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-head menu-icon"></i>
+              <span class="menu-title">Archived Accounts</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="archived_violation.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-ban menu-icon"></i>
+              <span class="menu-title">Archived Violations</span>
             </a>
           </li>
       
@@ -425,97 +438,142 @@ $qrImage = $_SESSION['qr_image'];
             });
 
 
-    const $violationSelect = $('#violationType');
-    const $offenseCountSelect = $('#offenseCount');
-    const $sanctionDisplay = $('#sanction');
-    const $sanctionid = $('#sanction_id');
+            const $violationSelect = $('#violationType');
+const $offenseCountSelect = $('#offenseCount');
+const $sanctionDisplay = $('#sanction');
+const $sanctionid = $('#sanction_id');
 
-    // Function to fetch violations from the database
-    function fetchViolations() {
-        $.ajax({
-            url: '../process/fetch_violations_dropdown.php', 
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                $violationSelect.empty(); // Clear existing options
+// Function to fetch violations from the database
+function fetchViolations() {
+    $.ajax({
+        url: '../process/fetch_violations_dropdown.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            $violationSelect.empty(); // Clear existing options
+            
+            if (data.length > 0) {
+                // Populate the violations dropdown
                 $.each(data, function (index, violation) {
                     $violationSelect.append($('<option>', {
-                        value: violation.violation_id, 
-                        text: violation.violation_name 
+                        value: violation.violation_id,
+                        text: violation.violation_name
                     }));
                 });
-            },
-            error: function (xhr, status, error) {
-                console.error('Error fetching violations:', error);
+
+                // Automatically select the first violation
+                const firstViolationId = data[0].violation_id;
+                $violationSelect.val(firstViolationId);
+
+                // Fetch offense count and sanction for the first violation
+                const studentId = $('#violationStudentId').val();
+                checkAndIncrementOffenseCount(studentId, firstViolationId);
             }
-        });
-    }
-
-    // Function to get the sanction based on selected violation and offense count
-    function fetchSanction(violationId, offenseCount) {
-        $.ajax({
-            url: '../process/fetch_sanction.php', // Your PHP file to fetch sanction
-            type: 'GET',
-            data: {
-                violationId: violationId,
-                offenseCount: offenseCount
-            },
-            dataType: 'json',
-            success: function (data) {
-                $sanctionDisplay.text(data.sanction_details); // Assuming the response has a 'sanction' field
-                $sanctionid.val(data.sanction_id);
-                console.log($sanctionid.val());
-            },
-            error: function (xhr, status, error) {
-                console.error('Error fetching sanction:', error);
-            }
-        });
-    }
-
-    // Event listeners
-    $violationSelect.change(function () {
-        fetchSanction($(this).val(), $offenseCountSelect.val());
+        },
+        error: function (xhr, status, error) {
+            console.error('Error fetching violations:', error);
+        }
     });
+}
 
-    $offenseCountSelect.change(function () {
-        fetchSanction($violationSelect.val(), $(this).val());
+// Function to check and auto-increment offense count
+function checkAndIncrementOffenseCount(studentId, violationId) {
+    $.ajax({
+        url: '../process/check_offense_count.php',
+        type: 'GET',
+        data: { studentId: studentId, violationId: violationId },
+        dataType: 'json',
+        success: function (data) {
+            let offenseCount = Math.min(data.highest_offense_count + 1, 4); // Increment, cap at 4
+            $offenseCountSelect.val(offenseCount).prop('disabled', true); // Set offense count and disable it
+            fetchSanction(violationId, offenseCount); // Fetch corresponding sanction
+        },
+        error: function (xhr, status, error) {
+            console.error('Error checking offense count:', error);
+            $offenseCountSelect.val(1).prop('disabled', true); // Default to 1 if error, and disable
+        }
     });
+}
 
-    // Initial fetch of violations when the modal is opened
-    $('#violationModal').on('show.bs.modal', function () {
-        fetchViolations();
+// Function to get the sanction based on selected violation and offense count
+function fetchSanction(violationId, offenseCount) {
+    $.ajax({
+        url: '../process/fetch_sanction.php',
+        type: 'GET',
+        data: {
+            violationId: violationId,
+            offenseCount: offenseCount
+        },
+        dataType: 'json',
+        success: function (data) {
+            $sanctionDisplay.text(data.sanction_details);
+            $sanctionid.val(data.sanction_id);
+        },
+        error: function (xhr, status, error) {
+            console.error('Error fetching sanction:', error);
+        }
     });
+}
+
+// Event listener for violation selection change
+$violationSelect.change(function () {
+    const studentId = $('#violationStudentId').val();
+    checkAndIncrementOffenseCount(studentId, $(this).val());
+});
+
+// Initial fetch of violations when the modal is opened
+$('#violationModal').on('show.bs.modal', function () {
+    fetchViolations();
+});
 
            
-  // Handle violation form submission
-    $('#violationForm').submit(function(e) {
-        e.preventDefault();
+// Handle violation form submission
+$('#violationForm').submit(function(e) {
+    e.preventDefault();
 
-        // Disable the submit button to prevent multiple submissions
-        $('#submitButton').prop('disabled', true);
+    // Disable the submit button to prevent multiple submissions
+    $('#submitButton').prop('disabled', true);
 
-        $.ajax({
-            url: '../process/submit_violation.php',
-            type: 'POST',
-            data: $(this).serialize(),
-            success: function(response) {
-                var data = JSON.parse(response);
-                if (data.status === 'success') {
-                    alert(data.message);
-                    $('#violationModal').modal('hide');
-                } else {
-                    alert(data.message);
-                }
-            },
-            error: function() {
-                alert('An error occurred while submitting the form.');
-            },
-            complete: function() {
-                // Re-enable the submit button after the request is done
-                $('#submitButton').prop('disabled', false);
+    // Create a new FormData object
+    const formData = new FormData();
+    
+    // Manually append each form field to FormData
+    formData.append('studentId', $('#violationStudentId').val());
+    formData.append('fullName', $('#fullName').val());
+    formData.append('section', $('#section').val());
+    formData.append('violationType', $('#violationType').val());
+    formData.append('offenseCount', $('#offenseCount').val()); // Explicitly add offenseCount
+    formData.append('sanction_id', $('#sanction_id').val());
+
+    // Log offense count to confirm
+    console.log('Offense Count:', formData.get('offenseCount'));
+
+    $.ajax({
+        url: '../process/submit_violation.php',
+        type: 'POST',
+        data: formData,
+        processData: false, // Prevent jQuery from automatically transforming the data into a query string
+        contentType: false, // Tell jQuery not to set contentType
+        success: function(response) {
+            var data = JSON.parse(response);
+            if (data.status === 'success') {
+                alert(data.message);
+                $('#violationModal').modal('hide');
+            } else {
+                alert(data.message);
             }
-        });
+        },
+        error: function() {
+            alert('An error occurred while submitting the form.');
+        },
+        complete: function() {
+            // Re-enable the submit button after the request is done
+            $('#submitButton').prop('disabled', false);
+        }
     });
+});
+
+
 
  });
 </script>

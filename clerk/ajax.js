@@ -86,7 +86,7 @@ $(document).ready(function () {
             ajaxUrl = '../process/createStudentAccount.php';
             var profilePictureFile = $('#studentProfilePicture')[0].files[0];
             var studentId = $('#studentId').val();
-            var guardianContact = $('#guardianContact').val(); // Get guardian contact number
+            var guardianContact = $('#guardianContactNumber').val(); // Get guardian contact number
             var email = $('#studentEmail').val();
 
             // Check if Student ID exists

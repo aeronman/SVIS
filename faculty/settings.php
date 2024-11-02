@@ -1,5 +1,5 @@
 <?php
-include('../process/checkSuperAdminSession.php');
+include('../process/checkFacultySession.php');
 
 $id = $_SESSION['id'];
 $fullName = $_SESSION['full_name'];
@@ -37,8 +37,8 @@ $qrImage = $_SESSION['qr_image'];
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo mr-5" href="index.php"><h4 class="text-dark">Super Admin</h4></a>
-        <a class="navbar-brand brand-logo-mini" href="index.php"><h4 class="text-dark">SA</h4></a>
+        <a class="navbar-brand brand-logo mr-5" href="index.php"><h4 class="text-dark">Faculty</h4></a>
+        <a class="navbar-brand brand-logo-mini" href="index.php"><h4 class="text-dark">Faculty</h4></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -234,7 +234,7 @@ $qrImage = $_SESSION['qr_image'];
                         <div class="form-group">
                             <label for="profile_picture">Profile Picture</label><br>
                             <img id="preview" src="<?=$profilePicture?>" alt="Profile Picture" style="width: 100px; height: auto; border: 1px solid #ccc; margin-bottom: 10px;"/><br>
-                            <input type="file" name="profile_picture" accept="image/*" onchange="previewImage(event)" required>
+                            <input type="file" name="profile_picture" accept="image/*" onchange="previewImage(event)">
                         </div>
                         <div class="form-group">
                             <label for="new_password">New Password</label>

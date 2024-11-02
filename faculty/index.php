@@ -1,5 +1,5 @@
 <?php
-include('../process/checkAdminSession.php');
+include('../process/checkFacultySession.php');
 
 $id = $_SESSION['id'];
 $fullName = $_SESSION['full_name'];
@@ -31,14 +31,16 @@ $qrImage = $_SESSION['qr_image'];
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 </head>
 <body>
   <div class="container-scroller">
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo mr-5" href="index.php"><h4 class="text-dark">Admin</h4></a>
-        <a class="navbar-brand brand-logo-mini" href="index.php"><h4 class="text-dark">A</h4></a>
+        <a class="navbar-brand brand-logo mr-5" href="index.php"><h4 class="text-dark">Faculty</h4></a>
+        <a class="navbar-brand brand-logo-mini" href="index.php"><h4 class="text-dark">Faculty</h4></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -405,12 +407,12 @@ $qrImage = $_SESSION['qr_image'];
   </div>
   <!-- container-scroller -->
   <script>
-   function showTopViolationModal() {
+  function showTopViolationModal() {
     $('#topViolationModal').modal('show');
     $.ajax({
         url: '../process/getTopViolations.php',
         method: 'GET',
-        dataType: 'json', // Expect JSON response
+        dataType: 'json',
         success: function(data) {
             if (data.status === 'success') {
                 let rows = '';
@@ -421,6 +423,12 @@ $qrImage = $_SESSION['qr_image'];
                     </tr>`;
                 });
                 $('#topViolationTable tbody').html(rows); // Populate table with sorted violation data
+
+                // Initialize or reinitialize DataTables
+                if ($.fn.DataTable.isDataTable('#topViolationTable')) {
+                    $('#topViolationTable').DataTable().destroy();
+                }
+                $('#topViolationTable').DataTable();
             } else {
                 $('#topViolationTable tbody').html('<tr><td colspan="2">' + data.message + '</td></tr>');
             }
@@ -436,7 +444,7 @@ function showTodayViolationsModal() {
     $.ajax({
         url: '../process/getTodaysViolation.php',
         method: 'GET',
-        dataType: 'json', // Expect JSON response
+        dataType: 'json',
         success: function(data) {
             if (data.status === 'success') {
                 let rows = '';
@@ -446,7 +454,12 @@ function showTodayViolationsModal() {
                         <td>${violation.violation_count}</td>
                     </tr>`;
                 });
-                $('#todayViolationsTable tbody').html(rows); // Populate table with today's violation data
+                $('#todayViolationsTable tbody').html(rows);
+
+                if ($.fn.DataTable.isDataTable('#todayViolationsTable')) {
+                    $('#todayViolationsTable').DataTable().destroy();
+                }
+                $('#todayViolationsTable').DataTable();
             } else {
                 $('#todayViolationsTable tbody').html('<tr><td colspan="2">' + data.message + '</td></tr>');
             }
@@ -462,7 +475,7 @@ function showMonthViolationsModal() {
     $.ajax({
         url: '../process/getMonthViolation.php',
         method: 'GET',
-        dataType: 'json', // Expect JSON response
+        dataType: 'json',
         success: function(data) {
             if (data.status === 'success') {
                 let rows = '';
@@ -472,7 +485,12 @@ function showMonthViolationsModal() {
                         <td>${violation.violation_count}</td>
                     </tr>`;
                 });
-                $('#monthViolationsTable tbody').html(rows); // Populate table with this month’s violation data
+                $('#monthViolationsTable tbody').html(rows);
+
+                if ($.fn.DataTable.isDataTable('#monthViolationsTable')) {
+                    $('#monthViolationsTable').DataTable().destroy();
+                }
+                $('#monthViolationsTable').DataTable();
             } else {
                 $('#monthViolationsTable tbody').html('<tr><td colspan="2">' + data.message + '</td></tr>');
             }
@@ -482,7 +500,6 @@ function showMonthViolationsModal() {
         }
     });
 }
-
         $(document).ready(function() {
 
 

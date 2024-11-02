@@ -222,7 +222,7 @@ $qrImage = $_SESSION['qr_image'];
                         <div class="form-group">
                             <label for="profile_picture">Profile Picture</label><br>
                             <img id="preview" src="<?=$profilePicture?>" alt="Profile Picture" style="width: 100px; height: auto; border: 1px solid #ccc; margin-bottom: 10px;"/><br>
-                            <input type="file" name="profile_picture" accept="image/*" onchange="previewImage(event)" required>
+                            <input type="file" name="profile_picture" accept="image/*" onchange="previewImage(event)">
                         </div>
                         <div class="form-group">
                             <label for="new_password">New Password</label>

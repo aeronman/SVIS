@@ -13,7 +13,7 @@ $sql = "
     JOIN violations v ON sv.violation_id = v.violation_id
     GROUP BY v.violation_id, v.violation_name
     ORDER BY violation_count DESC
-    LIMIT 1";  // Fetch the top violation
+    LIMIT 1";  // Fetch the top violation 
 
 $stmt = $conn->prepare($sql);
 

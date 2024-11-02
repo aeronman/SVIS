@@ -76,8 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Step 5: Send SMS to guardian using Semaphore
             $smsContent = "Hi $guardian_name,\n\nWe send you a text message to inform you that $full_name has committed the following violation:\n$violation_description\n\nThe sanction for these types of violation is as follows:\n$sanction_details";
 
-            // Assuming sendSMS is a function that sends an SMS using Semaphore
-            $smsStatus = sendSMS($guardian_contact, $smsContent);
+            // // Assuming sendSMS is a function that sends an SMS using Semaphore
+            // $smsStatus = sendSMS($guardian_contact, $smsContent);
             require '../vendor/autoload.php';
             //Create an instance; passing `true` enables exceptions
         $mail = new PHPMailer(true);

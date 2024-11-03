@@ -1,5 +1,6 @@
 <?php
-include('../process/checkClerkSession.php');
+include('../process/checkSuperAdminSession.php');
+
 $id = $_SESSION['id'];
 $fullName = $_SESSION['full_name'];
 $profilePicture = $_SESSION['profile_picture'];
@@ -12,7 +13,7 @@ $qrImage = $_SESSION['qr_image'];
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Logs</title>
+  <title>Chats</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="../vendors/feather/feather.css">
   <link rel="stylesheet" href="../vendors/ti-icons/css/themify-icons.css">
@@ -27,31 +28,66 @@ $qrImage = $_SESSION['qr_image'];
   <link rel="stylesheet" href="../css/vertical-layout-light/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="../images/logo2.webp" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  
-  <!-- Include DataTables CSS -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.3/css/buttons.dataTables.min.css">
-  <script src="ajax.js"></script>
-  <style>
-         .hidden {
-            display: none;
-        }
-   
-        th, td {
-            padding: 15px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-            height: 12px; /* Adjust header row height */
-        }
-        tr {
-            height: 50px; /* Adjust row height */
-        }
-    
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    #chat-sidebar {
+    width: 300px;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+}
+
+.chat-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.chat-item:hover {
+    background-color: #f9f9f9;
+}
+
+.profile-pic {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.chat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.student-name {
+    font-weight: bold;
+    font-size: 14px;
+    margin: 0;
+}
+
+.message-preview {
+    font-size: 12px;
+    color: #888;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+        /* Basic styling for the chat layout */
+        .chat-container { display: flex; }
+        .chat-sidebar { width: 30%; border-right: 1px solid #ccc; padding: 20px; overflow-y: auto; }
+        .chat-content { width: 70%; padding: 20px; display: flex; flex-direction: column; }
+        .chat-message { display: flex; align-items: center; margin-bottom: 10px; }
+        .message-right { justify-content: flex-end; background-color: #d0e9ff; padding: 10px; border-radius: 10px; }
+        .message-left { justify-content: flex-start; background-color: #f1f1f1; padding: 10px; border-radius: 10px; }
+        .message-box { display: flex; margin-top: auto; }
+        .message-input { flex-grow: 1; padding: 10px; border-radius: 5px; }
+        .send-btn { background-color: #007bff; color: white; border: none; padding: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -59,12 +95,12 @@ $qrImage = $_SESSION['qr_image'];
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo mr-5" href="index.php"><h4 class="text-dark">Clerk</h4></a>
-        <a class="navbar-brand brand-logo-mini" href="index.php"><h4 class="text-dark">C</h4></a>
+        <a class="navbar-brand brand-logo mr-5" href="index.php"><h4 class="text-dark">Super Admin</h4></a>
+        <a class="navbar-brand brand-logo-mini" href="index.php"><h4 class="text-dark">SA</h4></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-          <span class="icon-menu"></span> 
+          <span class="icon-menu"></span>
         </button>
         <ul class="navbar-nav mr-lg-2">
           <li class="nav-item nav-search d-none d-lg-block">
@@ -136,13 +172,13 @@ $qrImage = $_SESSION['qr_image'];
                 <i class="ti-settings text-primary"></i>
                 Settings
               </a>
-              <a href="../process/logout.php" class="dropdown-item">
+              <a href="../process/logout.php"class="dropdown-item">
                 <i class="ti-power-off text-primary"></i>
                 Logout
               </a>
             </div>
           </li>
-          <!-- <li class="nav-item nav-settings d-none d-lg-flex">
+              <!-- <li class="nav-item nav-settings d-none d-lg-flex">
             <a class="nav-link" href="#">
               <i class="icon-ellipsis"></i>
             </a>
@@ -174,7 +210,7 @@ $qrImage = $_SESSION['qr_image'];
           </div>
         </div>
       </div>
- 
+      
       <!-- partial -->
       <!-- partial:partials/_sidebar.html -->
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
@@ -185,18 +221,37 @@ $qrImage = $_SESSION['qr_image'];
               <span class="menu-title">Dashboard</span>
             </a>
           </li>
-          
+        
           <li class="nav-item">
-              <a class="nav-link" href="accounts.php" aria-expanded="false" aria-controls="auth">
-                <i class="icon-head menu-icon"></i>
-                <span class="menu-title">Accounts</span>
-              </a>
-            </li> 
-          
+            <a class="nav-link" href="accounts.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-head menu-icon"></i>
+              <span class="menu-title">Accounts</span>
+            </a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="violations.php" aria-expanded="false" aria-controls="auth">
               <i class="icon-ban menu-icon"></i>
               <span class="menu-title">Violations</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="archived_accounts.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-head menu-icon"></i>
+              <span class="menu-title">Archived Accounts</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="archived_violation.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-ban menu-icon"></i>
+              <span class="menu-title">Archived Violations</span>
+            </a>
+          </li>
+        
+          
+          <li class="nav-item">
+            <a class="nav-link" href="manage_violations.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-ban menu-icon"></i>
+              <span class="menu-title">Manage Violations</span>
             </a>
           </li>
           <li class="nav-item">
@@ -207,7 +262,7 @@ $qrImage = $_SESSION['qr_image'];
           </li>
       
           <li class="nav-item">
-            <a class="nav-link active" href="logs.php">
+            <a class="nav-link" href="logs.php">
               <i class="icon-paper menu-icon"></i>
               <span class="menu-title">Logs</span>
             </a>
@@ -242,50 +297,146 @@ $qrImage = $_SESSION['qr_image'];
               </div>
             </div>
           </div>
-          <div id="alertContainer"></div>
-        
-
-
-
-    <div class="col-lg-12 grid-margin stretch-card">
-    <div class="card">
-        <div class="card-body">
-    
-            <h2>Logs</h2>
-            <table id="logsTable" class="display" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Action Performed</th>
-                        <th>Performed By</th>
-                        <th>Date Logged</th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be loaded here by DataTables -->
-                </tbody>
-            </table>
-        
-        </div>
-    </div>
+          <div class="container-scroller">
+        <div class="chat-container">
+        <div id="chat-sidebar">
+    <!-- JavaScript will populate this list -->
 </div>
 
 
+            <!-- Chat Content -->
+            <div class="chat-content">
+                <div id="chatMessages" style="flex-grow: 1; overflow-y: auto;">
+                    <!-- Chat messages will load here dynamically -->
+                </div>
+                <div class="message-box">
+                    <input type="text" id="messageInput" class="message-input" placeholder="Type your message">
+                    <button class="send-btn" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-         
-    
+    <script>
+    let selectedStudentId = null;
+       // Load chat messages for selected student
+       function loadChat(studentId) {
+            selectedStudentId = studentId;
+            $.ajax({
+                url: '../process/fetch_chats.php',
+                method: 'GET',
+                data: { student_id: studentId },
+                dataType: 'json',
+                success: function(data) {
+                    $('#chatMessages').empty();
+                    data.forEach(chat => {
+                        const alignClass = (chat.sent_by === '<?php echo $_SESSION['account_type']; ?>') ? 'message-right' : 'message-left';
+                        const messageHtml = `<div class="chat-message ${alignClass}">
+                            ${chat.content}
+                        </div>`;
+                        $('#chatMessages').append(messageHtml);
+                    });
+                    $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
+                }
+            });
+        }
+
+    // Send a message
+function sendMessage() {
+    const message = $('#messageInput').val();
+    if (message && selectedStudentId) {
+        $.ajax({
+            url: '../process/send_message.php',
+            method: 'POST',
+            data: {
+                student_id: selectedStudentId,
+                message: message
+            },
+            success: function(response) {
+                // Check response status
+                if (response.status === 'success') {
+                    loadChat(selectedStudentId); // Reload the chat after sending
+                    $('#messageInput').val(''); // Clear input field
+                } else {
+                    console.error('Error sending message:', response.message);
+                    alert('Failed to send message: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', error);
+                alert('An error occurred while sending the message.');
+            }
+        });
+    }
+}
+     
+
+    $(document).ready(function() {
+        // Load chat list grouped by student
+        function loadChatList() {
+            $.ajax({
+                url: '../process/fetch_chat_list.php',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    let sidebar = $('#chat-sidebar');
+                    sidebar.empty(); // Clear any existing content
+
+                    // Check if there are chats available
+                    if (data.length === 0) {
+                        sidebar.append('<div class="no-messages">No messages yet</div>'); // Display message if no chats
+                        $('.message-box').hide(); // Hide the message input box
+                    } else {
+                        $('.message-box').show(); // Show the message input box
+                        data.forEach(function(chat) {
+                            const chatItem = $(`
+                                <div class="chat-item" data-student-id="${chat.student_id}">
+                                    <img src="${chat.profile_picture}" alt="Profile Picture" class="profile-pic">
+                                    <div class="chat-info">
+                                        <span class="student-name">${chat.student_name}</span>
+                                        <p class="message-preview">${chat.last_message}</p>
+                                    </div>
+                                </div>
+                            `);
+                            sidebar.append(chatItem);
+                        });
+
+                           // Attach click event to each chat item
+                            $('.chat-item').click(function() {
+                                const studentId = $(this).data('student-id');
+                                loadChat(studentId);  // Load chat messages for the selected student
+                            });
+
+                        // Automatically select the first chat if available
+                        const firstChatItem = $('.chat-item').first();
+                        if (firstChatItem.length) {
+                            firstChatItem.click(); // Trigger click to load first chat messages
+                            console.log('clicking fucker')
+                        }
+                    }
+
+                 
+                }
+            });
+        }
+
    
-       
-        <!-- content-wrapper ends -->
-        <!-- partial:partials/_footer.html -->
-    
-        <!-- partial -->
-      </div>
-      <!-- main-panel ends -->
+        
+        // Load the chat list initially
+        loadChatList();
+    });
+ 
+
+
+</script>
+
+     <!-- main-panel ends -->
     </div>
     <!-- page-body-wrapper ends -->
   </div>
-  <!-- container-scroller -->
+  <script>
+</script>
+
 
   <!-- plugins:js -->
   <script src="../vendors/js/vendor.bundle.base.js"></script>
@@ -295,13 +446,6 @@ $qrImage = $_SESSION['qr_image'];
   <script src="../vendors/datatables.net/jquery.dataTables.js"></script>
   <script src="../vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
   <script src="../js/dataTables.select.min.js"></script>
-        <!-- DataTables Buttons for Export -->
-        <script src="https://cdn.datatables.net/buttons/2.3.3/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.print.min.js"></script>
 
   <!-- End plugin js for this page -->
   <!-- inject:js -->
@@ -310,51 +454,11 @@ $qrImage = $_SESSION['qr_image'];
   <script src="../js/template.js"></script>
   <script src="../js/settings.js"></script>
   <script src="../js/todolist.js"></script>
-  
   <!-- endinject -->
   <!-- Custom js for this page-->
   <script src="../js/dashboard.js"></script>
   <script src="../js/Chart.roundedBarCharts.js"></script>
-
   <!-- End custom js for this page-->
- 
-<script>
-        $(document).ready(function() {
-            $('#logsTable').DataTable({
-                "ajax": {
-                    "url": "../process/fetch_student_clerk_logs.php",  // Point to the PHP file that returns logs
-                    "type": "POST",          // Use POST request to fetch data
-                    "dataSrc": "data"        // Use the "data" object from the response
-                },
-                "columns": [
-                    { "data": "action_performed" },  // Column for action performed
-                    { "data": "performed_by" },      // Column for performed by
-                    { "data": "logged_date" }        // Column for logged date
-                ],
-            "processing": true,
-            "searching": true,
-            "paging": true,
-            "ordering": true,
-            "order": [], // Disable initial sorting
-            dom: 'Bfrtip', // Enable buttons in the DOM
-            buttons: [
-                {
-                    extend: 'excelHtml5',
-                    title: 'Logs Data'
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Logs Data'
-                },
-                {
-                    extend: 'print',
-                    title: 'Logs Data'
-                }
-            ]
-            });
-        });
-    </script>
-     
 </body>
 
 </html>

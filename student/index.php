@@ -197,6 +197,12 @@ $conn ->close();
             </a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="chats.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-paper menu-icon"></i>
+              <span class="menu-title">Chats</span>
+            </a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="logs.php">
               <i class="icon-paper menu-icon"></i>
               <span class="menu-title">Logs</span>
@@ -233,37 +239,77 @@ $conn ->close();
               </div>
             </div>
           </div>
-          <div class="row mt-5">
-                    <div class="col-md-12 grid-margin">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Most Recent Violation</h5>
-                                <?php if ($recentViolation): ?>
-                                    <p class="card-text">Violation Name: <?= htmlspecialchars($recentViolation['violation_name']) ?></p>
-                                    <p class="card-text">Sanction Details: <?= htmlspecialchars($recentViolation['sanction_details']) ?></p>
-                                    <p class="card-text">Date: <?= htmlspecialchars($recentViolation['date_of_offense']) ?></p>
-                                <?php else: ?>
-                                    <p>No violations found.</p>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-        <div class="row mt-5">
-          <div class="col-md-12 grid-margin">
-            <div class="card" style="width: 18rem;">
-        
-                <div class="card-body">
-                    <h5 class="card-title"><?= $fullName ?></h5>
-                    <p class="card-text">ID: <?= $id ?></p>
-                    <img id="qrCode" src="data:image/png;base64,<?= $qrImage ?>" alt="QR Code" class="img-fluid mb-3">
-                    <a href="../process/download_qr.php" class="btn btn-primary">Download QR Code</a>
-                </div>
-            </div>
-          </div>
-        </div>
-   
+          <div class="row">
 
+          <!-- Top Violation Tile (Clickable) -->
+<div class="col-md-6 mb-4 stretch-card transparent">
+    <div class="card card-tale" id="topViolationTile" onclick="showTopViolationModal()">
+        <div class="card-body" data-bs-toggle="modal" data-bs-target="#recentViolationModal">
+            <h3 class="mb-4">Recent Violation</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Another card to trigger the user info modal -->
+<div class="col-md-6 mb-4 stretch-card transparent">
+    <div class="card card-tale" onclick="showUserInfoModal()">
+        <div class="card-body" data-bs-toggle="modal" data-bs-target="#userInfoModal">
+            <h3 class="mb-4">My Info</h3>
+
+        </div>
+    </div>
+</div>
+
+          </div>
+         <!-- Modal for Most Recent Violation -->
+<div class="modal fade" id="recentViolationModal" tabindex="-1" aria-labelledby="recentViolationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="recentViolationModalLabel">Most Recent Violation</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <?php if ($recentViolation): ?>
+                    <p><strong>Violation Name:</strong> <?= htmlspecialchars($recentViolation['violation_name']) ?></p>
+                    <p><strong>Sanction Details:</strong> <?= htmlspecialchars($recentViolation['sanction_details']) ?></p>
+                    <p><strong>Date:</strong> <?= htmlspecialchars($recentViolation['date_of_offense']) ?></p>
+                <?php else: ?>
+                    <p>No violations found.</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for User Information -->
+<div class="modal fade" id="userInfoModal" tabindex="-1" aria-labelledby="userInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userInfoModalLabel"><?= $fullName ?></h5>
+                <button type="button" class="btn-close" data- dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>ID:</strong> <?= $id ?></p>
+                <img id="qrCode" src="data:image/png;base64,<?= $qrImage ?>" alt="QR Code" class="img-fluid mb-3">
+                <a href="../process/download_qr.php" class="btn btn-primary">Download QR Code</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+   <script>
+    function showTopViolationModal() {
+    // Optionally set data dynamically if required
+    $('#recentViolationModal').modal('show');
+}
+
+function showUserInfoModal() {
+    $('#userInfoModal').modal('show');
+}
+
+   </script>
   
         <!-- content-wrapper ends -->
         <!-- partial:partials/_footer.html -->

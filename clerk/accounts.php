@@ -186,6 +186,12 @@ $qrImage = $_SESSION['qr_image'];
               <span class="menu-title">Violations</span>
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="chats.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-paper menu-icon"></i>
+              <span class="menu-title">Chats</span>
+            </a>
+          </li>
       
           <li class="nav-item">
             <a class="nav-link" href="logs.php">
@@ -458,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function () {
    
     function fetchAccounts(accountType) {
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', '../process/fetchAccounts.php', true);
+    xhr.open('POST', '../process/fetchAccountsClerk.php', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function () {
         if (xhr.status === 200) {

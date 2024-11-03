@@ -211,13 +211,13 @@ $qrImage = $_SESSION['qr_image'];
               <span class="menu-title">Archived Violations</span>
             </a>
           </li>
-     
           <li class="nav-item">
-            <a class="nav-link" href="manage_violations.php" aria-expanded="false" aria-controls="auth">
-              <i class="icon-ban menu-icon"></i>
-              <span class="menu-title">Manage Violations</span>
+            <a class="nav-link" href="chats.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-paper menu-icon"></i>
+              <span class="menu-title">Chats</span>
             </a>
           </li>
+   
       
           <li class="nav-item active">
             <a class="nav-link" href="logs.php">

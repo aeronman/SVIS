@@ -41,7 +41,7 @@ $qrImage = $_SESSION['qr_image'];
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
         <a class="navbar-brand brand-logo mr-5" href="index.php"><h4 class="text-dark">Clerk</h4></a>
-        <a class="navbar-brand brand-logo-mini" href="index.php"><h4 class="text-dark">Clerk</h4></a>
+        <a class="navbar-brand brand-logo-mini" href="index.php"><h4 class="text-dark">C</h4></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -179,6 +179,15 @@ $qrImage = $_SESSION['qr_image'];
               <span class="menu-title">Violations</span>
             </a>
           </li>
+        
+          <li class="nav-item">
+            <a class="nav-link" href="chats.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-paper menu-icon"></i>
+              <span class="menu-title">Chats</span>
+            </a>
+          </li>
+          
+       
       
           <li class="nav-item">
             <a class="nav-link" href="logs.php">
@@ -343,52 +352,57 @@ $qrImage = $_SESSION['qr_image'];
         <!-- partial -->
       </div>
       <div class="row mt-4">
-        <h4 class="centered">Visualize CICT Students Violation Through Graphs</h4>
-                    <!-- Filters -->
-<div class="col-12">
-    <label for="monthFilter">Month:</label>
-    <select id="monthFilter">
-        <option value="">All</option>
-        <option value="1">January</option>
-        <option value="2">February</option>
-        <option value="3">March</option>
-        <option value="4">April</option>
-        <option value="5">May</option>
-        <option value="6">June</option>
-        <option value="7">July</option>
-        <option value="8">August</option>
-        <option value="9">September</option>
-        <option value="10">October</option>
-        <option value="11">November</option>
-        <option value="12">December</option>
-    </select>
+    <h4 class="centered">Visualize CICT Students Violation Through Graphs</h4>
+    
+    <!-- Filters -->
+    <div class="col-12">
+        <label for="monthFilter">Month:</label>
+        <select id="monthFilter">
+            <option value="">All</option>
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
 
-    <label for="yearFilter">Year:</label>
-    <input type="number" id="yearFilter" placeholder="YYYY">
+        <label for="yearFilter">Year:</label>
+        <input type="number" id="yearFilter" placeholder="YYYY">
 
-    <label for="studentYearFilter">Student Year:</label>
-    <select id="studentYearFilter">
-        <option value="">All</option>
-        <option value="1">1st Year</option>
-        <option value="2">2nd Year</option>
-        <option value="3">3rd Year</option>
-        <option value="4">4th Year</option>
-    </select>
+        <label for="studentYearFilter">Student Year:</label>
+        <select id="studentYearFilter">
+            <option value="">All</option>
+            <option value="1">1st Year</option>
+            <option value="2">2nd Year</option>
+            <option value="3">3rd Year</option>
+            <option value="4">4th Year</option>
+        </select>
 
-    <button class="btn btn-primary"id="filterButton">Generate Charts</button>
+        <button class="btn btn-primary" id="filterButton">Generate Charts</button>
+    </div>
+
+    <!-- Print Button -->
+    <div class="col-12 mt-3">
+        <button class="btn btn-secondary" id="printButton">Print Charts</button>
+    </div>
 </div>
 
-      </div>
-
-      
 <!-- Chart Containers -->
-<div class="row">
+<div class="row chart-container">
     <canvas id="barChart"></canvas>
+</div>
+<div class="row chart-container">
+    <canvas id="pieChart"></canvas>
+</div>
 
-</div>
-<div class="row">
-<canvas id="pieChart"></canvas>
-</div>
+
 
       <!-- main-panel ends -->
     </div>
@@ -396,7 +410,7 @@ $qrImage = $_SESSION['qr_image'];
   </div>
   <!-- container-scroller -->
   <script>
- function showTopViolationModal() {
+function showTopViolationModal() {
     $('#topViolationModal').modal('show');
     $.ajax({
         url: '../process/getTopViolations.php',
@@ -490,7 +504,6 @@ function showMonthViolationsModal() {
     });
 }
 
-
         $(document).ready(function() {
 
 
@@ -575,6 +588,50 @@ function showMonthViolationsModal() {
         });
     }
 
+    document.getElementById('printButton').addEventListener('click', function() {
+        // Get the charts
+        const barChartCanvas = document.getElementById('barChart');
+        const pieChartCanvas = document.getElementById('pieChart');
+
+        // Create a new window for printing
+        const printWindow = window.open('', '', 'height=600,width=800');
+
+        // Wait for charts to be fully rendered before capturing them
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Print Charts</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; }
+                        .chart { margin: 20px; }
+                        img { max-width: 100%; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Violation Charts</h1>
+                    <div class="chart" id="barChartContainer"></div>
+                    <div class="chart" id="pieChartContainer"></div>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+
+        // Convert charts to images and add to print window
+        const barImage = barChartCanvas.toDataURL('image/png');
+        const pieImage = pieChartCanvas.toDataURL('image/png');
+
+        const barChartContainer = printWindow.document.getElementById('barChartContainer');
+        const pieChartContainer = printWindow.document.getElementById('pieChartContainer');
+
+        barChartContainer.innerHTML = `<h2>Bar Chart</h2><img src="${barImage}" alt="Bar Chart">`;
+        pieChartContainer.innerHTML = `<h2>Pie Chart</h2><img src="${pieImage}" alt="Pie Chart">`;
+
+        // Use setTimeout to ensure rendering is complete
+        setTimeout(() => {
+            printWindow.print();
+            printWindow.close();
+        }, 1000); // Wait for 1 second before printing
+    });
     $('#filterButton').on('click', function() {
         const month = $('#monthFilter').val();
         const year = $('#yearFilter').val();

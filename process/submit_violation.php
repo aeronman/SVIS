@@ -14,7 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $conn = getDbConnection();
     $fullName = $_SESSION['id'];
-    $status = "pending";
+	$account_type = $_SESSION['account_type'];
+	$status = "pending";
 
     // Step 1: Fetch student and guardian details
     $studentSql = "SELECT first_name, middle_name, last_name, email, guardian_name, guardian_contact FROM accounts WHERE id = ?";
@@ -75,9 +76,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Step 5: Send SMS to guardian using Semaphore
             $smsContent = "Hi $guardian_name,\n\nWe send you a text message to inform you that $full_name has committed the following violation:\n$violation_description\n\nThe sanction for these types of violation is as follows:\n$sanction_details";
-
-            // // Assuming sendSMS is a function that sends an SMS using Semaphore
+			
+			$autoChatContent = "Hi $full_name,
+			This is to notify you that you had committed the following violation:
+			$violation_description
+			The sanction for these types of violation is as follows:
+			$sanction_details";
+            // sendSMS is a function that sends an SMS using Semaphore
             // $smsStatus = sendSMS($guardian_contact, $smsContent);
+
+			// SQL query to insert a new chat message
+			$insertChatSql = "INSERT INTO chat (student_id, mod_id, content, sent_by) VALUES (?, ?, ?, ?)";
+			if ($insertChatStmt = $conn->prepare($insertChatSql)) {
+				// Bind parameters
+				$insertChatStmt->bind_param('isss', $studentId, $fullName, $autoChatContent, $account_type);
+				
+				// Execute the statement
+				if ($insertChatStmt->execute()) {
+					
+				} else {
+					echo json_encode(['status' => 'error', 'message' => 'Failed to save chat.']);
+				}
+
+				// Close the statement
+				$insertChatStmt->close();
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Failed to prepare chat statement.']);
+			}
+
+			
+
             require '../vendor/autoload.php';
             //Create an instance; passing `true` enables exceptions
         $mail = new PHPMailer(true);

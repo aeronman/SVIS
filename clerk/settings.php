@@ -176,6 +176,12 @@ $qrImage = $_SESSION['qr_image'];
               <span class="menu-title">Violations</span>
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="chats.php" aria-expanded="false" aria-controls="auth">
+              <i class="icon-paper menu-icon"></i>
+              <span class="menu-title">Chats</span>
+            </a>
+          </li>
       
           <li class="nav-item">
             <a class="nav-link" href="logs.php">

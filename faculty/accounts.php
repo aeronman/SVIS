@@ -28,7 +28,13 @@ $qrImage = $_SESSION['qr_image'];
   <!-- endinject -->
   <link rel="shortcut icon" href="../images/logo2.webp" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <!-- Include jQuery -->
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.3/css/buttons.dataTables.min.css">
+
   <script src="ajax.js"></script>
   <style>
          .hidden {
@@ -42,7 +48,7 @@ $qrImage = $_SESSION['qr_image'];
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
         <a class="navbar-brand brand-logo mr-5" href="index.php"><h4 class="text-dark">Faculty</h4></a>
-        <a class="navbar-brand brand-logo-mini" href="index.php"><h4 class="text-dark">F</h4></a>
+        <a class="navbar-brand brand-logo-mini" href="index.php"><h4 class="text-dark">Faculty</h4></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -124,11 +130,11 @@ $qrImage = $_SESSION['qr_image'];
               </a>
             </div>
           </li>
-          <li class="nav-item nav-settings d-none d-lg-flex">
+              <!-- <li class="nav-item nav-settings d-none d-lg-flex">
             <a class="nav-link" href="#">
               <i class="icon-ellipsis"></i>
             </a>
-          </li>
+          </li> -->
         </ul>
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
           <span class="icon-menu"></span>
@@ -180,7 +186,7 @@ $qrImage = $_SESSION['qr_image'];
               <span class="menu-title">Violations</span>
             </a>
           </li>
-      
+          
           <li class="nav-item">
             <a class="nav-link" href="logs.php">
               <i class="icon-paper menu-icon"></i>
@@ -217,7 +223,9 @@ $qrImage = $_SESSION['qr_image'];
               </div>
             </div>
           </div>
-       
+          <div id="alertContainer"></div>
+        
+   
 
 
     <div class="col-lg-12 grid-margin stretch-card">
@@ -250,64 +258,7 @@ $qrImage = $_SESSION['qr_image'];
     </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
 
-    const accountTypeFilter = document.getElementById('accountTypeFilter');
-
-    // Function to fetch and display accounts based on the selected account type
-    function fetchAccounts(accountType) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '../process/fetchAccountFaculty.php', true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                var response = JSON.parse(xhr.responseText);
-
-                // Destroy existing DataTable before updating data
-                if ($.fn.DataTable.isDataTable('#accountsTable')) {
-                    $('#accountsTable').DataTable().clear().destroy();
-                }
-
-                // Insert headers and rows into the table
-                document.querySelector('#accountsTable thead #tableHeaders').innerHTML = response.headers;
-                document.querySelector('#accountsTable tbody').innerHTML = response.rows;
-
-                // Re-initialize DataTable with updated data
-                $('#accountsTable').DataTable({
-                    "processing": true,
-                    "searching": true,
-                    "paging": true,
-                    "ordering": true,
-                    "order": [] // Disable initial sorting to avoid sorting errors
-                });
-            }
-        };
-        xhr.send('accountType=' + encodeURIComponent(accountType));
-    }
-
-    // Preload student accounts on page load
-    if (accountTypeFilter.value == "student") {
-        fetchAccounts('student'); // Fetch and load student accounts
-    }
-
-    // Event listener for dropdown change to fetch selected account type
-    accountTypeFilter.addEventListener('change', function () {
-        fetchAccounts(this.value);
-    });
-});
-
-
-
-function confirmDelete(id) {
-    // Set the id in the hidden input field in the delete form
-    document.getElementById('deleteId').value = id;
-    
-    // Show the delete confirmation modal
-    var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-    deleteModal.show();
-} 
-</script>
 
 
          
@@ -333,6 +284,13 @@ function confirmDelete(id) {
   <script src="../vendors/datatables.net/jquery.dataTables.js"></script>
   <script src="../vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
   <script src="../js/dataTables.select.min.js"></script>
+   <!-- DataTables Buttons for Export -->
+   <script src="https://cdn.datatables.net/buttons/2.3.3/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.print.min.js"></script>
 
   <!-- End plugin js for this page -->
   <!-- inject:js -->
@@ -347,6 +305,102 @@ function confirmDelete(id) {
   <script src="../js/dashboard.js"></script>
   <script src="../js/Chart.roundedBarCharts.js"></script>
 
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const accountTypeFilter = document.getElementById('accountTypeFilter');
+
+   
+    function fetchAccounts(accountType) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '../process/fetchAccountFaculty.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+
+            // Destroy existing DataTable before updating data
+            if ($.fn.DataTable.isDataTable('#accountsTable')) {
+                $('#accountsTable').DataTable().clear().destroy();
+            }
+
+            // Insert headers and rows into the table
+            document.querySelector('#accountsTable thead #tableHeaders').innerHTML = response.headers;
+            document.querySelector('#accountsTable tbody').innerHTML = response.rows;
+
+            $('#accountsTable').DataTable({
+                "processing": true,
+                "searching": true,
+                "paging": true,
+                "ordering": true,
+                "order": [], // Disable initial sorting
+                dom: 'Bfrtip', // Enable buttons in the DOM
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Accounts Data',
+                        exportOptions: {
+                            columns: function (idx, data, node) {
+                                // Exclude columns with images and the last column
+                                const isImageColumn = $('img', node).length > 0;
+                                const isLastColumn = idx === $('#accountsTable thead th').length - 1;
+                                return !isImageColumn && !isLastColumn;
+                            }
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Accounts Data',
+                        exportOptions: {
+                            columns: function (idx, data, node) {
+                                // Exclude columns with images and the last column
+                                const isImageColumn = $('img', node).length > 0;
+                                const isLastColumn = idx === $('#accountsTable thead th').length - 1;
+                                return !isImageColumn && !isLastColumn;
+                            }
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Accounts Data',
+                        exportOptions: {
+                            columns: function (idx, data, node) {
+                                // Exclude columns with images and the last column
+                                const isImageColumn = $('img', node).length > 0;
+                                const isLastColumn = idx === $('#accountsTable thead th').length - 1;
+                                return !isImageColumn && !isLastColumn;
+                            }
+                        }
+                    }
+                ]
+            });
+        }
+    };
+    xhr.send('accountType=' + encodeURIComponent(accountType));
+}
+
+    // Preload student accounts on page load
+    if (accountTypeFilter.value == "student") {
+        fetchAccounts('student'); // Fetch and load student accounts
+    }
+
+    // Event listener for dropdown change to fetch selected account type
+    accountTypeFilter.addEventListener('change', function () {
+        fetchAccounts(this.value);
+    });
+});
+
+
+
+function confirmDelete(id) {
+    // Set the id in the hidden input field in the delete form
+    document.getElementById('deleteId').value = id;
+    
+    // Show the delete confirmation modal
+    var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+} 
+</script>
   <!-- End custom js for this page-->
   <script>
         document.addEventListener('DOMContentLoaded', function() {

@@ -52,7 +52,7 @@ if (!empty($email)) {
             //Recipients
             $mail->setFrom('cictstudentviolation@gmail.com', 'CICT Student Violation');
             // $mail->addAddress('joe@example.net', 'Joe User');     //Add a recipient
-            $mail->addAddress('aerontarroza5@gmail.com');              
+            $mail->addAddress($email);              
             $mail->addReplyTo('cictstudentviolation@gmail.com', 'CICT Student Violation');
             // $mail->addCC('cc@example.com');
             // $mail->addBCC('bcc@example.com');

@@ -77,12 +77,27 @@ $qrImage = $_SESSION['qr_image'];
     text-overflow: ellipsis;
     max-width: 200px;
 }
+.chat-message {
+    margin-bottom: 15px;
+}
+
+.chat-content {
+    padding: 10px;
+    width:70%;
+    border-radius: 5px;
+}
+
+.chat-date {
+    font-size: 0.75em;
+    color: gray;
+    text-align: right;
+    margin-top: 2px;
+}
 
         /* Basic styling for the chat layout */
         .chat-container { display: flex; }
         .chat-sidebar { width: 30%; border-right: 1px solid #ccc; padding: 20px; overflow-y: auto; }
-        .chat-content { width: 70%; padding: 20px; display: flex; flex-direction: column; }
-        .chat-message { display: flex; align-items: center; margin-bottom: 10px; }
+       
         .message-right { justify-content: flex-end; background-color: #d0e9ff; padding: 10px; border-radius: 10px; }
         .message-left { justify-content: flex-start; background-color: #f1f1f1; padding: 10px; border-radius: 10px; }
         .message-box { display: flex; margin-top: auto; }
@@ -299,27 +314,41 @@ $qrImage = $_SESSION['qr_image'];
 
     <script>
     let selectedStudentId = null;
-       // Load chat messages for selected student
-       function loadChat(studentId) {
-            selectedStudentId = studentId;
-            $.ajax({
-                url: '../process/fetch_chats.php',
-                method: 'GET',
-                data: { student_id: studentId },
-                dataType: 'json',
-                success: function(data) {
-                    $('#chatMessages').empty();
-                    data.forEach(chat => {
-                        const alignClass = (chat.sent_by === '<?php echo $_SESSION['account_type']; ?>') ? 'message-right' : 'message-left';
-                        const messageHtml = `<div class="chat-message ${alignClass}">
-                            ${chat.content}
-                        </div>`;
-                        $('#chatMessages').append(messageHtml);
-                    });
-                    $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
-                }
+  // Load chat messages for selected student
+function loadChat(studentId) {
+    selectedStudentId = studentId;
+    $.ajax({
+        url: '../process/fetch_chats.php',
+        method: 'GET',
+        data: { student_id: studentId },
+        dataType: 'json',
+        success: function(data) {
+            $('#chatMessages').empty();
+            data.forEach(chat => {
+                const alignClass = (chat.sent_by === '<?php echo $_SESSION['account_type']; ?>') ? 'message-right' : 'message-left';
+                
+                // Convert sent_date to readable date and time format
+                const sentDate = new Date(chat.sent_date);
+                const formattedDate = sentDate.toLocaleString('en-US', {
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric', 
+                    hour: '2-digit', 
+                    minute: '2-digit'
+                });
+
+                const messageHtml = `
+                    <div class="chat-message ${alignClass}">
+                        <div class="chat-content">${chat.content}</div>
+                        <div class="chat-date">${formattedDate}</div>
+                    </div>`;
+                
+                $('#chatMessages').append(messageHtml);
             });
+            $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
         }
+    });
+}
 
     // Send a message
 function sendMessage() {
